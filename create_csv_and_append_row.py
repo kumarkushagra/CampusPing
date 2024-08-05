@@ -1,19 +1,38 @@
 import pandas as pd
 import os
 
+def is_notice_existing(new_row):
+    """
+    Checks if the notice is already in the CSV file.
+    
+    Args:
+    new_row (list): A list containing data for the new notice.
+    
+    Returns:
+    bool: True if the notice already exists, False otherwise.
+    """
+    filename = "notice.csv"
+    if os.path.isfile(filename):
+        df = pd.read_csv(filename)
+        new_row_df = pd.DataFrame([new_row], columns=df.columns)
+        # Check for duplicate entries based on 'Date' and 'Title'
+        for index, row in new_row_df.iterrows():
+            if ((df['Date'] == row['Date']) & (df['Title'] == row['Title'])).any():
+                return True
+    return False
+
 def create_csv_and_append_row(user_data):
     """
     Creates a new CSV file with specified columns if it doesn't exist and appends a new row.
     
     Args:
-    filename (str): The name of the CSV file.
     user_data (list): A list containing data to append to the CSV.
     """
     # Define name of CSV file
     filename = "notice.csv"
 
     # Define column names
-    columns = ['Date', 'Title', 'Publisher_info', 'pdf_link']
+    columns = ['Date','Time', 'Title', 'Publisher_info', 'pdf_link']
     
     # Check if the CSV file exists
     if not os.path.isfile(filename):
