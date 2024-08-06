@@ -30,6 +30,9 @@ def update_CSV():
         notice_title = tr.find('a').get_text(strip=True)
         row.append(notice_title)
 
+        # Download status
+        row.append(0)
+        
         # Publisher info
         publisher_info = tr.find('b').get_text(strip=True).replace("Published By:  ", "")
         row.append(publisher_info)
