@@ -16,7 +16,7 @@ def chat_with_model(user_input):
         user_input (str): The user's input.
         
     Returns:
-        str: The model's response.
+        str: The model's response.  
     """
     global chat_history  # Declare chat_history as global to modify it
 
