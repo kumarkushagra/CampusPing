@@ -2,8 +2,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
 # Load the pre-trained DialoGPT model and tokenizer
-tokenizer = AutoTokenizer.from_pretrained("gpt2")
-model = AutoModelForCausalLM.from_pretrained("gpt2")
+tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
+model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
 
 # Initialize chat history
 chat_history = torch.tensor([]).long()  # Ensure it's a tensor of long integers
@@ -16,7 +16,7 @@ def chat_with_model(user_input):
         user_input (str): The user's input.
         
     Returns:
-        str: The model's response.
+        str: The model's response.  
     """
     global chat_history  # Declare chat_history as global to modify it
 
@@ -40,7 +40,6 @@ def chat_with_model(user_input):
     return bot_response
 
 # Example conversation
-print(f"bot: {chat_with_model("Hello")}")
 while True:
     user_input = input("You: ")
     if user_input.lower() in ['exit', 'quit', 'bye']:
