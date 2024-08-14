@@ -7,10 +7,18 @@ from is_target_tr import is_target_tr
 from datetime import datetime
 import time
 
+# Important to avoid certificate verification
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import warnings
 # Define the URL
-url = 'https://www.imsnsit.org/imsnsit/notifications.php'
-response = requests.get(url)
-soup = BeautifulSoup(response.content, 'html.parser')
+# url = 'https://www.imsnsit.org/imsnsit/notifications.php'
+# response = requests.get(url)
+
+# warnings.simplefilter('ignore', InsecureRequestWarning)
+
+# response = requests.get('https://www.imsnsit.org/imsnsit/notifications.php', verify=False)
+
+# soup = BeautifulSoup(response.content, 'html.parser')
 
 
 
@@ -58,7 +66,8 @@ def main():
 if __name__ == "__main__":
     # defining soup
     url = 'https://www.imsnsit.org/imsnsit/notifications.php'
-    response = requests.get(url)
+    warnings.simplefilter('ignore', InsecureRequestWarning)
+    response = requests.get('https://www.imsnsit.org/imsnsit/notifications.php', verify=False)
     soup = BeautifulSoup(response.content, 'html.parser')
 
     # Find all target tr elements
