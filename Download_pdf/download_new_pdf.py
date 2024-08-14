@@ -1,42 +1,43 @@
+# importing librariez
 import requests
+import warnings
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-def create_session_and_get_cookies(url):
-    session = requests.Session()
-    response = session.get(url)
-    response.raise_for_status()  # Ensure the request was successful
-    return session
+# Deining the function where inputs: pdf_url, name_of_pdf to be saved as
+def download_pdf(pdf_url, pdf_name="notice.pdf"):
 
-def download_document(session, url, output_path):
-    # Get the document content using the session
-    response = session.get(url)
-    response.raise_for_status()  # Check if the request was successful
+    try:
+        # Suppress SSL warnings
+        warnings.simplefilter('ignore', InsecureRequestWarning)
 
-    # Print response details for debugging
-    print("Response URL:", response.url)
-    print("Response Status Code:", response.status_code)
-    print("Response Headers:", response.headers)
+        # Create a session
+        with requests.Session() as session:
+            # college Notice URL for establishing the session
+            notifications_url = 'https://www.imsnsit.org/imsnsit/notifications.php'
 
-    # Determine the file type from the response headers
-    content_type = response.headers.get('Content-Type', '')
-    print("Content-Type:", content_type)
+            # Access the notifications page to establish the session and set cookies
+            response = session.get(notifications_url, verify=False)
 
-    if 'application/pdf' in content_type:
-        # If the content is already a PDF, save it directly
-        with open(output_path, 'wb') as file:
-            file.write(response.content)
-        print(f"Document saved as {output_path}")
-    else:
-        # If the content is not a PDF, print an error message
-        print("The content is not a PDF. The response is:")
-        print(response.text)
+            # if session was established successfully:-
+            if response.status_code == 200:
+                # Fetch the PDF using the established session
+                pdf_response = session.get(pdf_url, allow_redirects=True, verify=False, headers={
+                    'Referer': notifications_url,  # Set Referer header if required
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'  # Mimic a real browser
+                })
 
-# URL of the notifications page and the document
-notifications_url = 'https://www.imsnsit.org/imsnsit/notifications.php'
-document_url = 'https://www.imsnsit.org/imsnsit/plum_url.php?qk7KimXU2qKPhxcpfYe8u0eo5n+rr8EW31QAO9Nu+VdHFCsAtZ2EZ7BZp1c/v3JOIYs5yY9zWzEU5nSLL7UyjL4GfRnoYkhSk34aJCNpMmAsAQmCGVODqTnV/SZa/MBGMX4WlWbi1fT1Zot3wsj35oPsFo1E4SJbPP5oLTXmkADXR3D7bjcLMlFwIuj1/eVUpuH1RyZssbqvtSKccATy0g=='  # Replace with your document URL
-output_path = 'output_document.pdf'
+                # Check if the response was successful and the file is a PDF
+                if pdf_response.status_code == 200 and pdf_response.headers.get('Content-Type') == 'application/pdf':
+                    # Save the PDF to the specified file path
+                    with open(pdf_name, 'wb') as file:
+                        file.write(pdf_response.content)
 
-# Create the session and get cookies
-session = create_session_and_get_cookies(notifications_url)
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
-# Download the document using the session
-download_document(session, document_url, output_path)
+
+# Testing this funtion
+if __name__=="__main__":
+    pdf_url = "https://www.imsnsit.org/imsnsit/plum_url.php?kR0Tf2aM5YVQRMOdyF1xGuExEC4z30kuFcaHt9rioqi33bMedqU6eakUHcZP1hP+T8Gg4xEZC9PHsypnl3V6pGjjmX1pLfhjxu5SAuHbfMUqGyE2G/6GRQJS+ZE3p2zZpBo9AYmR6IkUhLqeALMK853SU6eIUP4Apf3/MOXEg66s/a5i+qKdayM/nbjWibTa46m2aRT4dgoeuEHR8PYCcDDkh+Z904OPQWC3VbWNohY="
+    pdf_name = ""
+    download_pdf(pdf_url)
