@@ -36,7 +36,7 @@ def process_notice(input_text):
     summary = generate_summary(input_text)
     tags_csv = ", ".join(tags)
     
-    return f"Tags: {tags_csv}\nSummary: {summary}"
+    return tags_csv, summary
 
 
 if __name__=="__main__":
@@ -48,5 +48,6 @@ if __name__=="__main__":
     """
 
     # Get the result
-    result = process_notice(input_text)
-    print(result)
+    tags , summary = process_notice(input_text)
+    print(f"tags: {tags}")
+    print(f"summary: {summary}")
