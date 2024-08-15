@@ -1,34 +1,52 @@
-# from huggingface_hub import login
-# login(token="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")
+from transformers import pipeline
+
+from huggingface_hub import login
+# Login using your token
+login("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")
+# Load the summarization model
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+# Define a function to summarize the document
+def generate_summary(input_text, max_len=30, min_len=10):
+    summary = summarizer(input_text, max_length=max_len, min_length=min_len, do_sample=False)[0]['summary_text']
+    return summary
 
 
-# from transformers import AutoModelForCausalLM, AutoTokenizer
-# import torch
 
-# # Load the DialoGPT model and tokenizer
-# tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
-# model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
+# Modify the tags here
+def extract_tags(input_text):
+    tags = []
+    keywords = {
+        "fee_payment": ["fee", "payment"],
+        "exam_schedule": ["exam schedule", "schedule"],
+        "B.Tech": ["B.Tech", "bachelor of technology"],
+        "ECE": ["ECE", "electronics and communication engineering"],
+        "backlog": ["backlog"],
+    }
+    
+    # Check for keywords in the text and add them to tags if found
+    for tag, keywords_list in keywords.items():
+        if any(keyword.lower() in input_text.lower() for keyword in keywords_list):
+            tags.append(tag)
+    
+    return tags
 
-# # Function to handle conversation
-# def chat_with_bot(user_input, chat_history_ids=None):
-#     new_user_input_ids = tokenizer.encode(user_input + tokenizer.eos_token, return_tensors='pt')
+# Define the main function to get both tags and summary
+def process_notice(input_text):
+    tags = extract_tags(input_text)
+    summary = generate_summary(input_text)
+    tags_csv = ", ".join(tags)
+    
+    return f"Tags: {tags_csv}\nSummary: {summary}"
 
-#     # Append the new user input to the chat history
-#     bot_input_ids = new_user_input_ids if chat_history_ids is None else torch.cat([chat_history_ids, new_user_input_ids], dim=-1)
 
-#     # Generate a response from the model (reduced max_length for less resource usage)
-#     chat_history_ids = model.generate(bot_input_ids, max_length=100, pad_token_id=tokenizer.eos_token_id)
+if __name__=="__main__":
+    # Example usage
+    input_text = """
+        All B.Tech students are hereby informed that the fee payment for the upcoming semester is due by the end of this month.
+        The exam schedule for the final semester exams has been released. Students with backlogs are advised to check the updated
+        schedule on the official website. This notice is applicable to all branches including CSE, ECE, and Mechanical Engineering.
+    """
 
-#     # Decode the generated response
-#     chat_output = tokenizer.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
-#     return chat_output, chat_history_ids
-
-# # Start a conversation
-# chat_history_ids = None
-# while True:
-#     user_input = input("You: ")
-#     if user_input.lower() in ['exit', 'quit']:
-#         break
-#     response, chat_history_ids = chat_with_bot(user_input, chat_history_ids)
-#     print("Bot:", response)
-
+    # Get the result
+    result = process_notice(input_text)
+    print(result)
