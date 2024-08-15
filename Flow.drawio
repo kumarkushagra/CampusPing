@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="F204PuF6LAlZG96OQvPh" name="Page-1">
-        <mxGraphModel dx="1105" dy="625" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#000000" math="0" shadow="0">
+        <mxGraphModel dx="832" dy="485" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#000000" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -28,28 +28,28 @@
                 <mxCell id="5" value="Function 2 Downloads these PDFs and saves them temperoraly&amp;nbsp;&lt;br&gt;" style="rounded=0;whiteSpace=wrap;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
                     <mxGeometry x="330" y="320" width="160" height="70" as="geometry"/>
                 </mxCell>
-                <mxCell id="26" value="" style="edgeStyle=none;sketch=0;hachureGap=4;jiggle=2;curveFitting=1;fontFamily=Helvetica;fontSize=13;fontStyle=1;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" edge="1" parent="1" source="6" target="23">
+                <mxCell id="26" value="" style="edgeStyle=none;sketch=0;hachureGap=4;jiggle=2;curveFitting=1;fontFamily=Helvetica;fontSize=13;fontStyle=1;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" parent="1" source="6" target="23" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="6" value="Function 3 reads PDF and extracts text from it (OCR is required)&lt;br&gt;" style="rounded=0;whiteSpace=wrap;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
                     <mxGeometry x="330" y="420" width="160" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="27" value="" style="edgeStyle=none;sketch=0;hachureGap=4;jiggle=2;curveFitting=1;html=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;labelBorderColor=none;fontFamily=Helvetica;fontSize=13;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;" edge="1" parent="1" source="7" target="8">
+                <mxCell id="27" value="" style="edgeStyle=none;sketch=0;hachureGap=4;jiggle=2;curveFitting=1;html=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;labelBorderColor=none;fontFamily=Helvetica;fontSize=13;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;" parent="1" source="7" target="8" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="7" value="Extracted Raw data is passed through LLM which returns a sorted, filtered data in form of CSV&amp;nbsp;&lt;br&gt;" style="rounded=0;whiteSpace=wrap;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" parent="1" vertex="1">
+                <mxCell id="7" value="Extracted Raw data is passed through LLM which returns a sorted, filtered data in form of CSV&amp;nbsp;&lt;br&gt;" style="rounded=0;whiteSpace=wrap;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;fillColor=#d80073;fontColor=#ffffff;strokeColor=#A50040;" parent="1" vertex="1">
                     <mxGeometry x="294" y="630" width="240" height="80" as="geometry"/>
                 </mxCell>
                 <mxCell id="20" value="" style="edgeStyle=none;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" parent="1" source="8" target="10" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="8" value="Extracted Data is stored in CSV file Creating DB&lt;br&gt;" style="rounded=0;whiteSpace=wrap;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" parent="1" vertex="1">
+                <mxCell id="8" value="Extracted Data is stored in CSV file Creating DB&lt;br&gt;" style="rounded=0;whiteSpace=wrap;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;fillColor=#d80073;fontColor=#ffffff;strokeColor=#A50040;" parent="1" vertex="1">
                     <mxGeometry x="294" y="760" width="155" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="19" value="" style="edgeStyle=none;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" parent="1" source="9" target="10" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="9" value="DB from front end fetches the phone number and tag&amp;#39;s of users in a CSV" style="rounded=0;whiteSpace=wrap;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" parent="1" vertex="1">
+                <mxCell id="9" value="DB from front end fetches the phone number, roll number, email and tag's of users in a CSV" style="rounded=0;whiteSpace=wrap;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;" parent="1" vertex="1">
                     <mxGeometry x="570" y="740" width="170" height="70" as="geometry"/>
                 </mxCell>
                 <mxCell id="21" value="" style="edgeStyle=none;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" parent="1" source="10" target="11" edge="1">
@@ -58,13 +58,13 @@
                 <mxCell id="10" value="Function 4 matches Source CSV&amp;#39;s Tags and fetches phone number of &amp;quot;Target Users&amp;quot;" style="rounded=0;whiteSpace=wrap;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" parent="1" vertex="1">
                     <mxGeometry x="360" y="900" width="190" height="70" as="geometry"/>
                 </mxCell>
-                <mxCell id="11" value="Using Whatsapp API, a summary, PDF, and &quot;opt out of this programe&quot; link is sent to &quot;Target User&quot;&lt;br&gt;" style="rounded=0;whiteSpace=wrap;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" parent="1" vertex="1">
+                <mxCell id="11" value="Using SMS / Telegram API, a summary, PDF, and &quot;opt out of this programe&quot; link is sent to &quot;Target User&quot;" style="rounded=0;whiteSpace=wrap;fontStyle=1;fontSize=13;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" parent="1" vertex="1">
                     <mxGeometry x="350" y="1020" width="210" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="25" value="" style="edgeStyle=none;hachureGap=4;fontFamily=Helvetica;fontSize=13;fontStyle=1;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" edge="1" parent="1" source="23" target="7">
+                <mxCell id="25" value="" style="edgeStyle=none;hachureGap=4;fontFamily=Helvetica;fontSize=13;fontStyle=1;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" parent="1" source="23" target="7" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="23" value="upload the pdf on mongo db along with extracted txt in a .txt file" style="rounded=0;whiteSpace=wrap;hachureGap=4;fontFamily=Helvetica;fontSize=13;fontStyle=1;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;" vertex="1" parent="1">
+                <mxCell id="23" value="upload the pdf on&lt;u&gt; mongo db&lt;/u&gt; along with extracted txt in a .txt file" style="rounded=0;whiteSpace=wrap;hachureGap=4;fontFamily=Helvetica;fontSize=13;fontStyle=1;labelBorderColor=none;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;html=1;fillColor=#a20025;fontColor=#ffffff;strokeColor=#6F0000;" parent="1" vertex="1">
                     <mxGeometry x="330" y="510" width="167.5" height="75" as="geometry"/>
                 </mxCell>
             </root>

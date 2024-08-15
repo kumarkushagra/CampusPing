@@ -19,6 +19,6 @@ def extract_text_from_pdf(pdf_path):
     return text
 
 if __name__=="__main__":
-    pdf_path = r"D:\PROJECT\CampusPing\sample1.pdf"
+    pdf_path = r"D:\PROJECT\CampusPing\Download_pdf\notice.pdf"
     text = extract_text_from_pdf(pdf_path)
     print(text)
