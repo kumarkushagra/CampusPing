@@ -38,7 +38,6 @@ def process_notice(input_text):
     
     return tags_csv, summary
 
-
 if __name__=="__main__":
     # Example usage
     input_text = """

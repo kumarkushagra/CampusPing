@@ -4,7 +4,7 @@ import warnings
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 # Deining the function where inputs: pdf_url, name_of_pdf to be saved as
-def download_pdf(pdf_url, pdf_name="notice.pdf"):
+def download_pdf(pdf_url, pdf_name="testing_new.pdf"):
 
     try:
         # Suppress SSL warnings
@@ -38,6 +38,6 @@ def download_pdf(pdf_url, pdf_name="notice.pdf"):
 
 # Testing this funtion
 if __name__=="__main__":
-    pdf_url = "https://www.imsnsit.org/imsnsit/plum_url.php?kR0Tf2aM5YVQRMOdyF1xGuExEC4z30kuFcaHt9rioqi33bMedqU6eakUHcZP1hP+T8Gg4xEZC9PHsypnl3V6pGjjmX1pLfhjxu5SAuHbfMUqGyE2G/6GRQJS+ZE3p2zZpBo9AYmR6IkUhLqeALMK853SU6eIUP4Apf3/MOXEg66s/a5i+qKdayM/nbjWibTa46m2aRT4dgoeuEHR8PYCcDDkh+Z904OPQWC3VbWNohY="
+    pdf_url = "https://www.imsnsit.org/imsnsit/plum_url.php?lkGvSuifLfbM3Z9wValN0di3F5G0SgyptBQK1TltpoGPlPXNvQZ1bu22GHAMskfUfAtGpjNL0x6aX+y+mxPWBOeW4JglnYlium6BVrPPkwYb0Y2hXVLCQog/u6WuulzmzUJtpNEDzC0Wp82oNUx0jp9jHtrjWzJnQX17laZSCY9f9S+wuPYfYDlVoyOZcQtp"
     pdf_name = ""
     download_pdf(pdf_url)
