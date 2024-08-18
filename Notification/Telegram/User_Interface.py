@@ -9,7 +9,14 @@ NOTIFICATIONS_FILE: typing.Final = 'latest_notifications.txt'
 
 # Commands
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('Hello! How may I help you?')
+    await update.message.reply_text('''Hello! How may I help you?
+                                    
+i) View latest notification by clicking /latest_notifications
+ii) View all notification by clicking /view_all_notifications
+iii) Search any particular term in all the notifications typing /search <term> 
+                                                                       
+This bot will send you automatic notifications in future, you can select which type of notifications you would wish to recive.
+You get do this by selecting tags from /view_all_tags and then /edit_tags''')
 
 def read_notifications(file_path: str):
     notifications = []
@@ -36,7 +43,7 @@ async def latest_notifications_command(update: Update, context: ContextTypes.DEF
     if not formatted_notifications:
         formatted_notifications = "No notifications available."
     
-    await update.message.reply_text(formatted_notifications + "\n\n\nType /view_all_notifications to see all previous notifications.")
+    await update.message.reply_text(formatted_notifications + "\n\n\nPress /view_all_notifications to see all previous notifications.")
 
 async def view_all_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     notifications = read_notifications(NOTIFICATIONS_FILE)
@@ -89,7 +96,8 @@ async def edit_tags_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     new_tags = ' '.join(context.args)  # Get the new tags from command arguments
 
     if not new_tags:
-        await update.message.reply_text("Please provide tags to update: /edit_tags <tags>")
+        await update.message.reply_text("""Please provide tags to update: /edit_tags <tag1>,<tag2>....
+To view all tags press /view_all_tags""")
         return
 
     # Read the existing chat IDs and tags
@@ -222,7 +230,7 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('search', search_notifications_command))
     app.add_handler(CommandHandler('view_all_tags', view_all_tags_command))
     app.add_handler(CommandHandler('edit_tags', edit_tags_command))  
-    app.add_handler(CommandHandler('show_tags', show_tags_command))
+    app.add_handler(CommandHandler('show_my_tags', show_tags_command))
     
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
