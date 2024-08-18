@@ -11,16 +11,25 @@ NOTIFICATIONS_FILE: typing.Final = 'latest_notifications.txt'
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Hello! How may I help you?')
 
-async def latest_notifications_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Read the notifications from the file
-    if os.path.exists(NOTIFICATIONS_FILE):
-        with open(NOTIFICATIONS_FILE, "r") as file:
-            notifications = file.read().strip().split('\n')
-    else:
-        notifications = []
+def read_notifications(file_path: str):
+    notifications = []
+    if os.path.exists(file_path):
+        with open(file_path, "r") as file:
+            lines = file.readlines()
+            # Group lines into chunks of three
+            for i in range(0, len(lines), 4):  # 4 because there is an empty line between each notification
+                if i + 2 < len(lines):  # Ensure there are at least 3 lines for a notification
+                    summary = lines[i].strip()
+                    link = lines[i + 1].strip()
+                    tags = lines[i + 2].strip()
+                    notifications.append(f"{summary}\n\n {link} \n **{tags}**\n")
+    return notifications[::-1]  # Reverse the list to show notifications bottom to top
 
-    # Get the latest 5 notifications
-    latest_notifications = notifications[-5:] if notifications else []
+async def latest_notifications_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    notifications = read_notifications(NOTIFICATIONS_FILE)
+    
+    # Get the latest 5 notifications from the bottom to top
+    latest_notifications = notifications[:5]  # Get from the start because it's reversed
 
     # Format notifications with indexing and new lines
     formatted_notifications = "\n\n".join(f"{i+1}. {notification}" for i, notification in enumerate(latest_notifications))
@@ -30,12 +39,7 @@ async def latest_notifications_command(update: Update, context: ContextTypes.DEF
     await update.message.reply_text(formatted_notifications + "\n\n\nType /view_all_notifications to see all previous notifications.")
 
 async def view_all_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Read the notifications from the file
-    if os.path.exists(NOTIFICATIONS_FILE):
-        with open(NOTIFICATIONS_FILE, "r") as file:
-            notifications = file.read().strip().split('\n')
-    else:
-        notifications = []
+    notifications = read_notifications(NOTIFICATIONS_FILE)
 
     # Format notifications with indexing and new lines
     formatted_notifications = "\n\n".join(f"{i+1}. {notification}" for i, notification in enumerate(notifications))
@@ -50,12 +54,7 @@ async def search_notifications_command(update: Update, context: ContextTypes.DEF
         await update.message.reply_text("Please provide a search term: /search <term>")
         return
 
-    # Read the notifications from the file
-    if os.path.exists(NOTIFICATIONS_FILE):
-        with open(NOTIFICATIONS_FILE, "r") as file:
-            notifications = file.read().strip().split('\n')
-    else:
-        notifications = []
+    notifications = read_notifications(NOTIFICATIONS_FILE)
 
     # Search notifications for the term
     matching_notifications = [notification for notification in notifications if search_term.lower() in notification.lower()]
@@ -66,6 +65,25 @@ async def search_notifications_command(update: Update, context: ContextTypes.DEF
         formatted_notifications = "No matching notifications found."
     
     await update.message.reply_text(formatted_notifications)
+
+async def view_all_tags_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if os.path.exists(NOTIFICATIONS_FILE):
+        with open(NOTIFICATIONS_FILE, "r") as file:
+            lines = file.readlines()
+            tags = set()
+            for i in range(2, len(lines), 4):  # Start from the third line of each notification
+                if i < len(lines):
+                    current_tags = lines[i].strip().replace("Tags:", "").strip()  # Remove "Tags:" prefix
+                    current_tags_list = [tag.strip().lower() for tag in current_tags.split(",")]  # Normalize to lowercase
+                    tags.update(current_tags_list)
+            if tags:
+                unique_tags = sorted(tags, key=str.lower)
+                await update.message.reply_text("Unique Tags:\n" + "\n".join(unique_tags))
+            else:
+                await update.message.reply_text("No tags found.")
+    else:
+        await update.message.reply_text("No notifications file found.")
+        
 
 # Responses
 def handle_responses(text: str) -> str:
@@ -88,25 +106,40 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     print(f'User({update.message.chat.id}) in {message_type}: "{text}"')
 
+    # Get all available tags
+    if os.path.exists(NOTIFICATIONS_FILE):
+        with open(NOTIFICATIONS_FILE, "r") as file:
+            lines = file.readlines()
+            available_tags = set()
+            for i in range(2, len(lines), 4):  # Start from the third line of each notification
+                if i < len(lines):
+                    current_tags = lines[i].strip().replace("Tags:", "").strip()
+                    current_tags_list = [tag.strip() for tag in current_tags.split(",")]
+                    available_tags.update(current_tags_list)
+    else:
+        available_tags = set()
+
     # Saving Chat ID in a text file
     chat_id = update.message.chat.id
     try:
         # Checking if user ID is already saved
         with open("chat_ids.txt", "r") as file:
-            existing_chat_ids = file.readlines()
+            existing_chat_ids = file.read()
         
-        if any(f"Chat ID: {chat_id}\n" in line for line in existing_chat_ids):
+        if f"Chat ID: {chat_id}\n" in existing_chat_ids:
             print(f"Chat ID {chat_id} already exists in the file.")
         else:
             with open("chat_ids.txt", "a") as file:
                 file.write(f"Chat ID: {chat_id}\n")
-            print(f"Chat ID {chat_id} added to the file.")
+                file.write(f"Tags: {', '.join(sorted(available_tags))}\n\n")
+            print(f"Chat ID {chat_id} and tags added to the file.")
     
     except FileNotFoundError:
         # File does not exist, so create it and add the chat ID
         with open("chat_ids.txt", "a") as file:
             file.write(f"Chat ID: {chat_id}\n")
-        print(f"Chat ID {chat_id} added to the new file.")
+            file.write(f"Tags: {', '.join(sorted(available_tags))}\n\n")
+        print(f"Chat ID {chat_id} and tags added to the new file.")
 
     if message_type == 'group':
         if BOT_USERNAME in text:
@@ -128,11 +161,10 @@ if __name__ == '__main__':
 
     # Commands
     app.add_handler(CommandHandler('start', start_command))
-    # Comment out or remove the help command
-    # app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('latest_notifications', latest_notifications_command))
     app.add_handler(CommandHandler('view_all_notifications', view_all_command))
-    app.add_handler(CommandHandler('search', search_notifications_command))  # Added search command
+    app.add_handler(CommandHandler('search', search_notifications_command))
+    app.add_handler(CommandHandler('view_all_tags', view_all_tags_command))  # Added view_all_tags command
     
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
