@@ -1,0 +1,20 @@
+Registration Reminder: Registration for the upcoming semester ends tomorrow. Please complete your registration on the student portal.
+Class Cancellation: Attention: The [Course Name] class scheduled for today at [Time] has been canceled. Check the schedule for updates.
+Exam Schedule: The exam schedule for the end-of-semester exams has been posted. Please check your student account for your exam dates and times.
+Library Hours: Reminder: The library will have extended hours during finals week. Check the library website for updated hours.
+Scholarship Deadline: Don’t forget! The application deadline for the [Scholarship Name] is approaching. Submit your applications by [Date].
+Career Fair: Mark your calendars! The annual career fair will take place on [Date]. Explore job opportunities and network with employers.
+Study Group Meetings: Join study groups for [Course Name] this week. Check the student portal for schedules and meeting locations.
+Academic Advising: Academic advising appointments for course selection are available. Schedule your appointment with your advisor soon.
+Dorm Maintenance: Important: Dormitory maintenance will occur on [Date]. There may be temporary disruptions to services.
+Health Services: The campus health center will be offering free flu shots on [Date]. Don’t miss out on this opportunity.
+Student Organizations Fair: Join us for the Student Organizations Fair on [Date]. Discover new clubs and activities to get involved in.
+Textbook Rentals: Reminder: Return your rented textbooks by [Date] to avoid late fees.
+Orientation Week: Welcome to new students! Orientation Week begins on [Date]. Check the schedule for events and activities.
+Graduation Ceremony: Graduation Ceremony will be held on [Date]. Ensure you have completed all requirements and RSVP by [Date].
+Final Project Submission: Final project submissions for [Course Name] are due by [Date]. Submit your work through the course portal.
+Student Discounts: Student discounts available at the campus bookstore and local businesses. Show your student ID to get discounts.
+Library Book Due: Reminder: Your library book is due on [Date]. Please return or renew to avoid late fees.
+Campus Safety: Reminder: Campus safety drills will be conducted on [Date]. Participation is mandatory for all students.
+Wellness Workshop: Join us for a wellness workshop on [Date]. Topics include stress management and mental health resources.
+Sports Event: Come support your team at the [Sport Name] game on [Date]. Game starts at [Time] at the campus stadium.

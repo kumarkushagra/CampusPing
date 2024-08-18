@@ -1,11 +1,10 @@
 import typing
 from telegram import Bot
 import asyncio
-#from LLM_api import LLM_contact
 
 TOKEN: typing.Final = '7418556410:AAGQ1Rz01PRCa8Z0qtHV33_twEspGY92rd0'
 CHAT_IDS_FILE: typing.Final = 'chat_ids.txt'
-#new_notification = LLM_contact.summary
+NOTIFICATIONS_FILE: typing.Final = 'latest_notifications.txt'
 
 async def send_message_to_chat_ids():
     bot = Bot(token=TOKEN)
@@ -14,16 +13,25 @@ async def send_message_to_chat_ids():
         with open(CHAT_IDS_FILE, "r") as file:
             chat_ids = [line.split(': ')[1].strip() for line in file.readlines() if line.strip()]
 
+        # Read the last notification from the notifications file
+        with open(NOTIFICATIONS_FILE, "r") as file:
+            notifications = file.read().strip().split('\n')
+            if notifications:
+                last_notification = notifications[-1]
+            else:
+                print("No notifications available.")
+                return
+
         for chat_id in chat_ids:
             try:
-                # Send message asynchronously
-                await bot.send_message(chat_id=chat_id, text="new_notification") #Yaha update hoga
-                print(f"Message sent to chat ID {chat_id}")
+                # Send the last notification asynchronously
+                await bot.send_message(chat_id=chat_id, text=last_notification)
+                print(f"Message sent to chat ID {chat_id}: {last_notification}")
             except Exception as e:
                 print(f"Failed to send message to chat ID {chat_id}. Error: {e}")
 
     except FileNotFoundError:
-        print(f"File {CHAT_IDS_FILE} not found.")
+        print(f"One or more files not found.")
     except Exception as e:
         print(f"An error occurred: {e}")
 
