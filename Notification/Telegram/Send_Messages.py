@@ -17,7 +17,7 @@ async def send_message_to_chat_ids():
         with open(NOTIFICATIONS_FILE, "r") as file:
             notifications = file.read().strip().split('\n')
             if notifications:
-                last_notification = notifications[-1]
+                last_notification = 'Latest Notification\n'+notifications[-1]
             else:
                 print("No notifications available.")
                 return
