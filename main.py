@@ -1,1 +1,2 @@
-import fastapi
+def main():
+    1
