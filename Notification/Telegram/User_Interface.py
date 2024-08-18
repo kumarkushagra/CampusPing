@@ -149,7 +149,7 @@ async def show_tags_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("No chat IDs file found.")
 
-# Responses
+# Responses to updated via AI
 def handle_responses(text: str) -> str:
     processed: str = text.lower()
     
