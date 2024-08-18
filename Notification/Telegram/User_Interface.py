@@ -84,6 +84,62 @@ async def view_all_tags_command(update: Update, context: ContextTypes.DEFAULT_TY
     else:
         await update.message.reply_text("No notifications file found.")
         
+async def edit_tags_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.message.chat.id
+    new_tags = ' '.join(context.args)  # Get the new tags from command arguments
+
+    if not new_tags:
+        await update.message.reply_text("Please provide tags to update: /edit_tags <tags>")
+        return
+
+    # Read the existing chat IDs and tags
+    if os.path.exists("chat_ids.txt"):
+        with open("chat_ids.txt", "r") as file:
+            lines = file.readlines()
+    else:
+        await update.message.reply_text("No chat IDs file found.")
+        return
+
+    # Write back the updated file
+    with open("chat_ids.txt", "w") as file:
+        found = False
+        i = 0
+        while i < len(lines):
+            if f"Chat ID: {chat_id}" in lines[i]:
+                file.write(f"Chat ID: {chat_id}\n")
+                file.write(f"Tags: {new_tags}\n")
+                found = True
+                i += 2  # Skip the next line where the old tags were
+            else:
+                file.write(lines[i])
+                i += 1
+
+        if not found:
+            # If chat ID was not found, add it with new tags
+            file.write(f"Chat ID: {chat_id}\n")
+            file.write(f"Tags: {new_tags}\n")
+
+    await update.message.reply_text(f"Tags updated to: {new_tags}")
+
+async def show_tags_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.message.chat.id
+    found = False
+    
+    if os.path.exists("chat_ids.txt"):
+        with open("chat_ids.txt", "r") as file:
+            lines = file.readlines()
+            for i in range(len(lines)):
+                if f"Chat ID: {chat_id}" in lines[i]:
+                    found = True
+                    tags_line = lines[i + 1].strip()  # The line after the chat ID line
+                    tags = tags_line.replace("Tags:", "").strip()  # Remove "Tags:" prefix
+                    await update.message.reply_text(f"Your tags: {tags}")
+                    break
+
+        if not found:
+            await update.message.reply_text("No tags found for your chat ID.")
+    else:
+        await update.message.reply_text("No chat IDs file found.")
 
 # Responses
 def handle_responses(text: str) -> str:
@@ -164,7 +220,9 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('latest_notifications', latest_notifications_command))
     app.add_handler(CommandHandler('view_all_notifications', view_all_command))
     app.add_handler(CommandHandler('search', search_notifications_command))
-    app.add_handler(CommandHandler('view_all_tags', view_all_tags_command))  # Added view_all_tags command
+    app.add_handler(CommandHandler('view_all_tags', view_all_tags_command))
+    app.add_handler(CommandHandler('edit_tags', edit_tags_command))  
+    app.add_handler(CommandHandler('show_tags', show_tags_command))
     
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
