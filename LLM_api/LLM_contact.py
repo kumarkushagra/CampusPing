@@ -39,14 +39,14 @@ def process_notice(input_text):
     tags = extract_tags(input_text)
     summary = generate_summary(input_text)
     tags_csv = ", ".join(tags)
-
+    link = "link"  # link add krdiyo tu  
     file_path = 'latest_notifications.txt'
 
     # Append the data to the file
     with open(file_path, 'a') as file:
+        file.write(f"{summary}\n")
+        file.write(f"Link: {link}\n")
         file.write(f"Tags: {tags_csv}\n")
-        file.write(f"Summary: {summary}\n")
-        file.write(f"Link: \n")
         file.write('\n')  # Add a new line between entries
     
     return tags_csv, summary
