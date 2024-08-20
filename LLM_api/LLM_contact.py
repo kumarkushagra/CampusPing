@@ -39,7 +39,7 @@ def process_notice(input_text):
     tags = extract_tags(input_text)
     summary = generate_summary(input_text)
     tags_csv = ", ".join(tags)
-    link = "link"  # link add krdiyo tu  
+    link = "https://www.imsnsit.org/imsnsit/notifications.php"  # link add krdiyo tu  
     file_path = 'latest_notifications.txt'
 
     # Append the data to the file
