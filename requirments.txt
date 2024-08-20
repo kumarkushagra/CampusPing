@@ -1,8 +1,1 @@
-https://github.com/UB-Mannheim/tesseract/wiki
-https://ghostscript.com/releases/gsdnld.html
-
-BeautifulSoup
-pandas
-requests 
-pdfkit 
-PyMuPDF
+ÿþ
