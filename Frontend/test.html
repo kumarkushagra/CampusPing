@@ -11,19 +11,21 @@
     .header-logo img {
       border-radius: 50%;
     }
+
     .form-label {
       color: #e2e8f0;
     }
+
     .form-checkbox {
       margin-right: 0.5rem;
-      accent-color: #4f46e5; /* Tailwind's indigo-500 color */
+      accent-color: #4f46e5;
     }
+
     .confirmation-message {
-      color: #34d399; /* Tailwind's green-400 color */
+      color: #34d399;
     }
   </style>
 </head>
-
 
 <body class="bg-gray-900 text-gray-300">
 
@@ -37,8 +39,7 @@
       </a>
     </div>
   </header>
-<hr>
-<hr>
+
   <section class="bg-gray-900 py-24">
     <div class="container mx-auto px-6">
       <div class="lg:w-3/5 md:w-1/2 mx-auto mb-10 text-center">
@@ -72,40 +73,9 @@
           </div>
 
           <div class="relative mb-4">
-            <label class="flex items-center">
-              <input id="btech" type="checkbox" value="B.Tech" class="form-checkbox">
-              <span class="ml-2">B.Tech</span>
-            </label>
-          </div>
-          <div class="relative mb-4">
-            <label class="flex items-center">
-              <input id="bba" type="checkbox" value="BBA" class="form-checkbox">
-              <span class="ml-2">BBA</span>
-            </label>
-          </div>
-          <div class="relative mb-4">
-            <label class="flex items-center">
-              <input id="mba" type="checkbox" value="MBA" class="form-checkbox">
-              <span class="ml-2">MBA</span>
-            </label>
-          </div>
-          <div class="relative mb-4">
-            <label class="flex items-center">
-              <input id="mtech" type="checkbox" value="M.Tech" class="form-checkbox">
-              <span class="ml-2">M.Tech</span>
-            </label>
-          </div>
-          <div class="relative mb-4">
-            <label class="flex items-center">
-              <input id="backlog" type="checkbox" value="Backlog/Improvement" class="form-checkbox">
-              <span class="ml-2">Backlog/Improvement</span>
-            </label>
-          </div>
-          <div class="relative mb-4">
-            <label class="flex items-center">
-              <input id="rollno" type="checkbox" value="My Rollno." class="form-checkbox">
-              <span class="ml-2">My Rollno.</span>
-            </label>
+            <button type="button"
+              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600"
+              onclick="toggleModal()">Select Tags</button>
           </div>
 
           <button type="submit"
@@ -118,8 +88,85 @@
       </div>
     </div>
   </section>
-<hr>
-<hr>
+
+  <div id="tagModal" class="fixed inset-0 bg-gray-900 bg-opacity-80 hidden flex items-center justify-center">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+      <h3 class="text-white text-lg font-medium mb-4">Select Tags</h3>
+      <form id="tagForm">
+        <div class="relative mb-4">
+          <label class="flex items-center">
+            <input id="btech" type="checkbox" value="B.Tech" class="form-checkbox">
+            <span class="ml-2">B.Tech</span>
+          </label>
+        </div>
+        <div class="relative mb-4">
+          <label class="flex items-center">
+            <input id="bba" type="checkbox" value="BBA" class="form-checkbox">
+            <span class="ml-2">BBA</span>
+          </label>
+        </div>
+        <div class="relative mb-4">
+          <label class="flex items-center">
+            <input id="mba" type="checkbox" value="MBA" class="form-checkbox">
+            <span class="ml-2">MBA</span>
+          </label>
+        </div>
+        <div class="relative mb-4">
+          <label class="flex items-center">
+            <input id="mtech" type="checkbox" value="M.Tech" class="form-checkbox">
+            <span class="ml-2">M.Tech</span>
+          </label>
+        </div>
+        <div class="relative mb-4">
+          <label class="flex items-center">
+            <input id="backlog" type="checkbox" value="Backlog/Improvement" class="form-checkbox">
+            <span class="ml-2">Backlog/Improvement</span>
+          </label>
+        </div>
+        <div class="relative mb-4">
+          <label class="flex items-center">
+            <input id="rollno" type="checkbox" value="My Rollno." class="form-checkbox">
+            <span class="ml-2">My Rollno.</span>
+          </label>
+        </div>
+
+        <div class="flex justify-end">
+          <button type="button"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600"
+            onclick="toggleModal()">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Enhanced Modal with ARIA Attributes -->
+<div id="tagModal" class="fixed inset-0 bg-gray-900 bg-opacity-80 hidden flex items-center justify-center" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+  <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+    <h3 id="modalTitle" class="text-white text-lg font-medium mb-4">Select Tags</h3>
+    <form id="tagForm">
+      <!-- Form elements here -->
+      <div class="flex justify-end">
+        <button type="button"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600"
+          onclick="toggleModal()">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- JavaScript for Modal Accessibility -->
+<script>
+  function toggleModal() {
+    const modal = document.getElementById('tagModal');
+    const isHidden = modal.classList.toggle('hidden');
+    modal.setAttribute('aria-hidden', isHidden);
+    if (!isHidden) {
+      document.querySelector('#tagForm').querySelector('input').focus();
+    }
+  }
+</script>
+
+
   <footer class="bg-gray-900 py-6">
     <div class="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between">
       <a href="#" class="flex items-center text-white">
@@ -141,15 +188,10 @@
           </svg>
         </a>
         <a href="#" class="text-gray-400 hover:text-white mx-2">
-          <svg fill="none" stroke="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
-            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-            <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
-          </svg>
-        </a>
-        <a href="#" class="text-gray-400 hover:text-white mx-2">
           <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
-            <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path>
-            <circle cx="4" cy="4" r="2"></circle>
+            <path
+              d="M16 8a6 6 0 11-12 0 6 6 0 0112 0zm-5-2h2v5h-2V6zm0 7h2v2h-2v-2zm12 5v2h-8v-2h8z">
+            </path>
           </svg>
         </a>
       </div>
@@ -157,42 +199,12 @@
   </footer>
 
   <script>
-    document.getElementById("studentForm").addEventListener("submit", function (event) {
-      event.preventDefault(); // Prevent form from submitting normally
-      
-      // Extract form data
-      const rollNumber = document.getElementById("rollNumber").value;
-      const email = document.getElementById("email").value;
-      const phone = document.getElementById("phone").value;
-      
-      // Get selected keywords
-      const selectedKeywords = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
-        .map(checkbox => checkbox.value);
-  
-      // Send data to server
-      fetch("http://127.0.0.1:8000/submit", {  // Ensure this matches your FastAPI server URL
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          rollNumber: rollNumber,
-          email: email,
-          phone: phone,
-          keywords: selectedKeywords
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Display confirmation message
-        document.getElementById("confirmationMessage").textContent = "Your data has been recorded";
-      })
-      .catch(error => console.error("Error:", error));
-    });
+    function toggleModal() {
+      const modal = document.getElementById('tagModal');
+      modal.classList.toggle('hidden');
+    }
   </script>
-  
 
 </body>
 
 </html>
-
