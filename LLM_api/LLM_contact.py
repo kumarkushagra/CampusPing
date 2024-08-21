@@ -29,7 +29,7 @@ with HiddenPrints():
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
 # Define a function to summarize the document
-def generate_summary(input_text, max_len=30, min_len=10):
+def generate_summary(input_text, max_len=70, min_len=50):
     summary = summarizer(input_text, max_length=max_len, min_length=min_len, do_sample=False, clean_up_tokenization_spaces=True)[0]['summary_text']
     return summary
 
