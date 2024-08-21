@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+  <title>NSUT LLM Notifications</title>
+  <style>
+    /* Custom styles for a more polished look */
+    .header-logo img {
+      border-radius: 50%;
+    }
+    .form-label {
+      color: #e2e8f0;
+    }
+    .form-checkbox {
+      margin-right: 0.5rem;
+      accent-color: #4f46e5; /* Tailwind's indigo-500 color */
+    }
+    .confirmation-message {
+      color: #34d399; /* Tailwind's green-400 color */
+    }
+  </style>
+</head>
+
+
+<body class="bg-gray-900 text-gray-300">
+
+  <header class="bg-gray-900 py-4">
+    <div class="container mx-auto flex items-center justify-between px-6">
+      <a href="#" class="flex items-center text-white">
+        <div class="header-logo">
+          <img src="NSUT_logo-removebg-preview.png" height="50" width="50" alt="NSUT Logo">
+        </div>
+        <span class="ml-3 text-xl font-bold">NSUT LLM</span>
+      </a>
+    </div>
+  </header>
+<hr>
+<hr>
+  <section class="bg-gray-900 py-24">
+    <div class="container mx-auto px-6">
+      <div class="lg:w-3/5 md:w-1/2 mx-auto mb-10 text-center">
+        <h1 class="text-4xl font-extrabold text-white mb-4">Sign In to Access Personalized Notifications Just for You!</h1>
+        <p class="text-lg leading-relaxed text-gray-400">
+          This project delivers personalized notifications to students based on their branch and course. It allows
+          students to receive relevant updates, such as deadlines and announcements, while enabling institutions to
+          efficiently manage and distribute this information.
+        </p>
+      </div>
+
+      <div class="bg-gray-800 bg-opacity-60 rounded-lg p-8 max-w-md mx-auto">
+        <h2 class="text-white text-lg font-medium mb-5 text-center">Student Data Form</h2>
+        <form id="studentForm">
+          <div class="relative mb-4">
+            <label for="rollNumber" class="form-label block text-sm">Roll Number (Alpha Numeric):</label>
+            <input type="text" id="rollNumber" name="rollNumber" required
+              class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded py-2 px-3 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+          </div>
+
+          <div class="relative mb-4">
+            <label for="email" class="form-label block text-sm">College Email ID:</label>
+            <input type="email" id="email" name="email" required
+              class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded py-2 px-3 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+          </div>
+
+          <div class="relative mb-4">
+            <label for="phone" class="form-label block text-sm">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required
+              class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded py-2 px-3 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+          </div>
+
+          <div class="relative mb-4">
+            <label class="flex items-center">
+              <input id="btech" type="checkbox" value="B.Tech" class="form-checkbox">
+              <span class="ml-2">B.Tech</span>
+            </label>
+          </div>
+          <div class="relative mb-4">
+            <label class="flex items-center">
+              <input id="bba" type="checkbox" value="BBA" class="form-checkbox">
+              <span class="ml-2">BBA</span>
+            </label>
+          </div>
+          <div class="relative mb-4">
+            <label class="flex items-center">
+              <input id="mba" type="checkbox" value="MBA" class="form-checkbox">
+              <span class="ml-2">MBA</span>
+            </label>
+          </div>
+          <div class="relative mb-4">
+            <label class="flex items-center">
+              <input id="mtech" type="checkbox" value="M.Tech" class="form-checkbox">
+              <span class="ml-2">M.Tech</span>
+            </label>
+          </div>
+          <div class="relative mb-4">
+            <label class="flex items-center">
+              <input id="backlog" type="checkbox" value="Backlog/Improvement" class="form-checkbox">
+              <span class="ml-2">Backlog/Improvement</span>
+            </label>
+          </div>
+          <div class="relative mb-4">
+            <label class="flex items-center">
+              <input id="rollno" type="checkbox" value="My Rollno." class="form-checkbox">
+              <span class="ml-2">My Rollno.</span>
+            </label>
+          </div>
+
+          <button type="submit"
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600">
+            Sign In
+          </button>
+        </form>
+
+        <p id="confirmationMessage" class="confirmation-message text-center mt-4"></p>
+      </div>
+    </div>
+  </section>
+<hr>
+<hr>
+  <footer class="bg-gray-900 py-6">
+    <div class="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between">
+      <a href="#" class="flex items-center text-white">
+        <div class="header-logo">
+          <img src="NSUT_logo-removebg-preview.png" height="50" width="50" alt="NSUT Logo">
+        </div>
+        <span class="ml-3 text-xl font-bold">NSUT LLM</span>
+      </a>
+      <p class="text-sm text-gray-500 mt-4 sm:mt-0">© 2024 NSUT LLM — All Rights Reserved</p>
+      <div class="flex mt-4 sm:mt-0">
+        <a href="#" class="text-gray-400 hover:text-white mx-2">
+          <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
+            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+          </svg>
+        </a>
+        <a href="#" class="text-gray-400 hover:text-white mx-2">
+          <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
+            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
+          </svg>
+        </a>
+        <a href="#" class="text-gray-400 hover:text-white mx-2">
+          <svg fill="none" stroke="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
+            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
+          </svg>
+        </a>
+        <a href="#" class="text-gray-400 hover:text-white mx-2">
+          <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
+            <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path>
+            <circle cx="4" cy="4" r="2"></circle>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("studentForm").addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent form from submitting normally
+      
+      // Extract form data
+      const rollNumber = document.getElementById("rollNumber").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      
+      // Get selected keywords
+      const selectedKeywords = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(checkbox => checkbox.value);
+  
+      // Send data to server
+      fetch("http://127.0.0.1:8000/submit", {  // Ensure this matches your FastAPI server URL
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          rollNumber: rollNumber,
+          email: email,
+          phone: phone,
+          keywords: selectedKeywords
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Display confirmation message
+        document.getElementById("confirmationMessage").textContent = "Your data has been recorded";
+      })
+      .catch(error => console.error("Error:", error));
+    });
+  </script>
+  
+
+</body>
+
+</html>
+
