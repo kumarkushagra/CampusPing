@@ -28,9 +28,19 @@ with HiddenPrints():
 # Load the summarization model
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
+
+from transformers import BartTokenizer
+
+# Load the tokenizer for the BART model
+tokenizer = BartTokenizer.from_pretrained("facebook/bart-large-cnn")
+
 # Define a function to summarize the document
 def generate_summary(input_text, max_len=70, min_len=50):
-    summary = summarizer(input_text, max_length=max_len, min_length=min_len, do_sample=False, clean_up_tokenization_spaces=True)[0]['summary_text']
+    # Tokenize input text
+    inputs = tokenizer(input_text, return_tensors="pt", truncation=True, max_length=1024)
+    # Generate summary
+    summary_ids = summarizer.model.generate(inputs['input_ids'], max_length=max_len, min_length=min_len, num_beams=4, early_stopping=True)
+    summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
     return summary
 
 # Modify the tags here
