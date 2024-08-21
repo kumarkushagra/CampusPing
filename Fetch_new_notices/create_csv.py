@@ -2,8 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import os
-from create_csv_and_append_row import create_csv_and_append_row, is_notice_existing
-from is_target_tr import is_target_tr
+from .create_csv_and_append_row import create_csv_and_append_row, is_notice_existing
+from .is_target_tr import is_target_tr
 from datetime import datetime
 import time
 
