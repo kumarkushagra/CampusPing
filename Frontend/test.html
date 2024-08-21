@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,19 +10,24 @@
         .header-logo img {
             border-radius: 50%;
         }
+
         .form-label {
             color: #e2e8f0;
         }
+
         .form-checkbox {
             margin-right: 0.5rem;
             accent-color: #4f46e5;
         }
+
         .confirmation-message {
             color: #34d399;
         }
     </style>
 </head>
+
 <body class="bg-gray-900 text-gray-300">
+
     <header class="bg-gray-900 py-4">
         <div class="container mx-auto flex items-center justify-between px-6">
             <a href="#" class="flex items-center text-white">
@@ -72,8 +78,7 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                        onclick="generateCSV(event)">
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600">
                         Sign In
                     </button>
                 </form>
@@ -133,6 +138,11 @@
         </div>
     </div>
 
+    <button id="downloadCSVButton" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-600 mt-4">
+      Download All Data
+  </button>
+  
+
     <footer class="bg-gray-900 py-6">
         <div class="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between">
             <a href="#" class="flex items-center text-white">
@@ -165,6 +175,8 @@
     </footer>
 
     <script>
+        const csvData = []; // Array to store all form submissions
+
         function toggleModal() {
             const modal = document.getElementById('tagModal');
             modal.classList.toggle('hidden');
@@ -177,17 +189,34 @@
             const form = document.getElementById('studentForm');
             const formData = new FormData(form);
 
-            // Prepare CSV data
+            // Prepare data for the CSV
             const data = [
                 formData.get('rollNumber'),
                 formData.get('email'),
                 formData.get('phone')
             ];
 
+            // Add data to the CSV data array
+            csvData.push(data);
+
+            // Optional: Show confirmation message
+            document.getElementById('confirmationMessage').textContent = 'Data collected successfully!';
+
+            // Reset the form
+            form.reset();
+        }
+
+        function downloadCSV() {
+            // Check if there's data to download
+            if (csvData.length === 0) {
+                document.getElementById('confirmationMessage').textContent = 'No data to download.';
+                return;
+            }
+
             // Prepare CSV content
             const csvContent = 'data:text/csv;charset=utf-8,' +
                 'Roll Number,Email,Phone\n' +
-                data.join(',') + '\n';
+                csvData.map(row => row.join(',')).join('\n') + '\n';
 
             // Create a link element and trigger download
             const encodedUri = encodeURI(csvContent);
@@ -197,10 +226,14 @@
             document.body.appendChild(link); // Required for Firefox
             link.click();
             document.body.removeChild(link); // Remove the link after triggering download
-
-            // Optional: Show confirmation message
-            document.getElementById('confirmationMessage').textContent = 'CSV file generated successfully!';
         }
+
+        // Attach event listener to the form submit event
+        document.getElementById('studentForm').addEventListener('submit', generateCSV);
+
+        // Optional: Add a button to download all collected data
+        document.getElementById('downloadCSVButton').addEventListener('click', downloadCSV);
     </script>
 </body>
+
 </html>
