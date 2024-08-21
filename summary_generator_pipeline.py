@@ -20,7 +20,7 @@ from Download_pdf.download_new_pdf import *
 from Download_pdf.ocr_pdf import *
 
 
-def main(counter):
+def main():
     input_file = r"Fetch_new_notices\notice.csv"
     output_file = "output.csv"
 
@@ -76,11 +76,12 @@ def main(counter):
         
         # Delete the temporary file
         os.remove(pdf_path)
-        counter +=1
-        if counter == 2:
-            break
+        # counter +=1
+        # if counter == 2:
+        #     break
 
 
 if __name__ == "__main__":
-    counter = 0
-    main(counter)
+    # counter = 0
+    # main(counter)
+    main()
