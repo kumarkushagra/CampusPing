@@ -1,0 +1,1 @@
+This file has been created to ensure the "temp" directory persists on GitHub, as empty directories are removed by GitHub.
