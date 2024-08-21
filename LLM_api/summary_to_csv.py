@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-def append_to_csv(s_no, extracted_text, llm_summary, link_to_notice, tags, filename='notices.csv'):
+def append_to_csv(new_row, filename='notices.csv'):
     # Define the column headings
     column_headers = ['S. no.', 'extracted_text', 'LLM_summary', 'link_to_notice', 'tags']
     
@@ -12,13 +12,13 @@ def append_to_csv(s_no, extracted_text, llm_summary, link_to_notice, tags, filen
         df.to_csv(filename, index=False)
     
     # Append the new row to the CSV
-    new_row = {
-        'S. no.': s_no,
-        'extracted_text': extracted_text,
-        'LLM_summary': llm_summary,
-        'link_to_notice': link_to_notice,
-        'tags': tags
-    }
+    # new_row = {
+    #     'S. no.': s_no,
+    #     'extracted_text': extracted_text,
+    #     'LLM_summary': llm_summary,
+    #     'link_to_notice': link_to_notice,
+    #     'tags': tags
+    # }
     
     df = pd.DataFrame([new_row])
     df.to_csv(filename, mode='a', header=False, index=False)
