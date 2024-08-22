@@ -75,7 +75,7 @@ def update_CSV(notice_csv_path = r'database\notice.csv'):
         row.append(link)
 
         # Check if the notice is already in the CSV
-        if not is_notice_existing(row):
+        if not is_notice_existing(row,notice_csv_path ):
             create_csv_and_append_row(row)
             print("New notice added")
         else:

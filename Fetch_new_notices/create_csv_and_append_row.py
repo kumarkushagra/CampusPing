@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-def is_notice_existing(new_row):
+def is_notice_existing(new_row,filename):
     """
     Checks if the notice is already in the CSV file.
     
@@ -11,7 +11,7 @@ def is_notice_existing(new_row):
     Returns:
     bool: True if the notice already exists, False otherwise.
     """
-    filename = "notice.csv"
+    # filename = "notice.csv" # This is now an input variable
     if os.path.isfile(filename):
         df = pd.read_csv(filename)
         new_row_df = pd.DataFrame([new_row], columns=df.columns)
