@@ -21,7 +21,7 @@ def is_notice_existing(new_row):
                 return True
     return False
 
-def create_csv_and_append_row(user_data):
+def create_csv_and_append_row(user_data,filename = "database/notice.csv"):
     """
     Creates a new CSV file with specified columns if it doesn't exist and appends a new row.
     
@@ -29,7 +29,7 @@ def create_csv_and_append_row(user_data):
     user_data (list): A list containing data to append to the CSV.
     """
     # Define name of CSV file
-    filename = "notice.csv"
+    
 
     # Define column names
     columns = ['S.No','Date','Time', 'Title','Processed_status' ,'Publisher_info', 'pdf_link']

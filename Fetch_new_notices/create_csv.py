@@ -22,11 +22,21 @@ import warnings
 
 
 
-def update_CSV():
+def update_CSV(notice_csv_path = r'database\notice.csv'):
+    # defining soup
+    url = 'https://www.imsnsit.org/imsnsit/notifications.php'
+    warnings.simplefilter('ignore', InsecureRequestWarning)
+    response = requests.get('https://www.imsnsit.org/imsnsit/notifications.php', verify=False)
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # Find all target tr elements
+    target_trs = soup.find_all(is_target_tr)
+    
+    
     for tr in target_trs:
         try:
             # Read the existing CSV file to find the last serial number
-            existing_df = pd.read_csv("notice.csv")
+            existing_df = pd.read_csv(notice_csv_path)
             last_serial_number = existing_df["S.No"].max()
         except (FileNotFoundError, pd.errors.EmptyDataError):
             # If the file doesn't exist or is empty, start with 0
