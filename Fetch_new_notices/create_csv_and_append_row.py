@@ -32,7 +32,7 @@ def create_csv_and_append_row(user_data):
     filename = "notice.csv"
 
     # Define column names
-    columns = ['Date','Time', 'Title','Download status' ,'Publisher_info', 'pdf_link']
+    columns = ['S.No','Date','Time', 'Title','Processed_status' ,'Publisher_info', 'pdf_link']
     
     # Check if the CSV file exists
     if not os.path.isfile(filename):

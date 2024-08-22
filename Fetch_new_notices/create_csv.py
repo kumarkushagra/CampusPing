@@ -2,8 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import os
-from create_csv_and_append_row import create_csv_and_append_row, is_notice_existing
-from is_target_tr import is_target_tr
+from .create_csv_and_append_row import create_csv_and_append_row, is_notice_existing
+from .is_target_tr import is_target_tr
 from datetime import datetime
 import time
 
@@ -24,7 +24,22 @@ import warnings
 
 def update_CSV():
     for tr in target_trs:
+        try:
+            # Read the existing CSV file to find the last serial number
+            existing_df = pd.read_csv("notice.csv")
+            last_serial_number = existing_df["S.No"].max()
+        except (FileNotFoundError, pd.errors.EmptyDataError):
+            # If the file doesn't exist or is empty, start with 0
+            last_serial_number = 0
+            
+        serial_number = last_serial_number + 1
+        
         row = []
+        
+        # Serial number
+        row.append(serial_number)
+        serial_number += 1  # Increment for the next notice
+        
         # Date
         date = tr.find('td').get_text(strip=True)
         row.append(date)
