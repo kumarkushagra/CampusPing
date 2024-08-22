@@ -2,209 +2,248 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
-  <title>NSUT LLM Notifications</title>
-  <style>
-    /* Custom styles for a more polished look */
-    .header-logo img {
-      border-radius: 50%;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+    <title>NSUT LLM Notifications</title>
+    <style>
+        .header-logo img {
+            border-radius: 50%;
+        }
 
-    .form-label {
-      color: #e2e8f0;
-    }
+        .form-label {
+            color: #e2e8f0;
+        }
 
-    .form-checkbox {
-      margin-right: 0.5rem;
-      accent-color: #4f46e5;
-    }
+        .form-checkbox {
+            margin-right: 0.5rem;
+            accent-color: #4f46e5;
+        }
 
-    .confirmation-message {
-      color: #34d399;
-    }
-  </style>
+        .confirmation-message {
+            color: #34d399;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-900 text-gray-300">
 
-  <header class="bg-gray-900 py-4">
-    <div class="container mx-auto flex items-center justify-between px-6">
-      <a href="#" class="flex items-center text-white">
-        <div class="header-logo">
-          <img src="NSUT_logo-removebg-preview.png" height="50" width="50" alt="NSUT Logo">
+    <header class="bg-gray-900 py-4">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <a href="#" class="flex items-center text-white">
+                <div class="header-logo">
+                    <img src="NSUT_logo-removebg-preview.png" height="50" width="50" alt="NSUT Logo">
+                </div>
+                <span class="ml-3 text-xl font-bold">NSUT LLM</span>
+            </a>
         </div>
-        <span class="ml-3 text-xl font-bold">NSUT LLM</span>
-      </a>
+    </header>
+
+    <section class="bg-gray-900 py-24">
+        <div class="container mx-auto px-6">
+            <div class="lg:w-3/5 md:w-1/2 mx-auto mb-10 text-center">
+                <h1 class="text-4xl font-extrabold text-white mb-4">Sign In to Access Personalized Notifications Just for You!</h1>
+                <p class="text-lg leading-relaxed text-gray-400">
+                    This project delivers personalized notifications to students based on their branch and course. It allows
+                    students to receive relevant updates, such as deadlines and announcements, while enabling institutions to
+                    efficiently manage and distribute this information.
+                </p>
+            </div>
+
+            <div class="bg-gray-800 bg-opacity-60 rounded-lg p-8 max-w-md mx-auto">
+                <h2 class="text-white text-lg font-medium mb-5 text-center">Student Data Form</h2>
+                <form id="studentForm">
+                    <div class="relative mb-4">
+                        <label for="rollNumber" class="form-label block text-sm">Roll Number (Alpha Numeric):</label>
+                        <input type="text" id="rollNumber" name="rollNumber" required
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded py-2 px-3 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                    </div>
+
+                    <div class="relative mb-4">
+                        <label for="email" class="form-label block text-sm">College Email ID:</label>
+                        <input type="email" id="email" name="email" required
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded py-2 px-3 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                    </div>
+
+                    <div class="relative mb-4">
+                        <label for="phone" class="form-label block text-sm">Phone Number:</label>
+                        <input type="tel" id="phone" name="phone" required
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded py-2 px-3 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                    </div>
+
+                    <div class="relative mb-4">
+                        <button type="button"
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                            onclick="toggleModal()">Select Tags</button>
+                    </div>
+
+                    <form id="studentForm" action="/submit" method="POST">
+                      <!-- Form fields here -->
+                      <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                          Sign In
+                      </button>
+                  </form>
+                  
+                </form>
+
+                <p id="confirmationMessage" class="confirmation-message text-center mt-4"></p>
+            </div>
+        </div>
+    </section>
+
+    <div id="tagModal" class="fixed inset-0 bg-gray-900 bg-opacity-80 hidden flex items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h3 class="text-white text-lg font-medium mb-4">Select Tags</h3>
+            <form id="tagForm">
+                <div class="relative mb-4">
+                    <label class="flex items-center">
+                        <input id="btech" type="checkbox" value="B.Tech" class="form-checkbox">
+                        <span class="ml-2">B.Tech</span>
+                    </label>
+                </div>
+                <div class="relative mb-4">
+                    <label class="flex items-center">
+                        <input id="bba" type="checkbox" value="BBA" class="form-checkbox">
+                        <span class="ml-2">BBA</span>
+                    </label>
+                </div>
+                <div class="relative mb-4">
+                    <label class="flex items-center">
+                        <input id="mba" type="checkbox" value="MBA" class="form-checkbox">
+                        <span class="ml-2">MBA</span>
+                    </label>
+                </div>
+                <div class="relative mb-4">
+                    <label class="flex items-center">
+                        <input id="mtech" type="checkbox" value="M.Tech" class="form-checkbox">
+                        <span class="ml-2">M.Tech</span>
+                    </label>
+                </div>
+                <div class="relative mb-4">
+                    <label class="flex items-center">
+                        <input id="backlog" type="checkbox" value="Backlog/Improvement" class="form-checkbox">
+                        <span class="ml-2">Backlog/Improvement</span>
+                    </label>
+                </div>
+                <div class="relative mb-4">
+                    <label class="flex items-center">
+                        <input id="rollno" type="checkbox" value="My Rollno." class="form-checkbox">
+                        <span class="ml-2">My Rollno.</span>
+                    </label>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="button"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                        onclick="toggleModal()">Save</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </header>
 
-  <section class="bg-gray-900 py-24">
-    <div class="container mx-auto px-6">
-      <div class="lg:w-3/5 md:w-1/2 mx-auto mb-10 text-center">
-        <h1 class="text-4xl font-extrabold text-white mb-4">Sign In to Access Personalized Notifications Just for You!</h1>
-        <p class="text-lg leading-relaxed text-gray-400">
-          This project delivers personalized notifications to students based on their branch and course. It allows
-          students to receive relevant updates, such as deadlines and announcements, while enabling institutions to
-          efficiently manage and distribute this information.
-        </p>
-      </div>
+    <button id="downloadCSVButton" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-green-600 mt-4">
+      Download All Data
+  </button>
+  
 
-      <div class="bg-gray-800 bg-opacity-60 rounded-lg p-8 max-w-md mx-auto">
-        <h2 class="text-white text-lg font-medium mb-5 text-center">Student Data Form</h2>
-        <form id="studentForm">
-          <div class="relative mb-4">
-            <label for="rollNumber" class="form-label block text-sm">Roll Number (Alpha Numeric):</label>
-            <input type="text" id="rollNumber" name="rollNumber" required
-              class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded py-2 px-3 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-600">
-          </div>
-
-          <div class="relative mb-4">
-            <label for="email" class="form-label block text-sm">College Email ID:</label>
-            <input type="email" id="email" name="email" required
-              class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded py-2 px-3 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-600">
-          </div>
-
-          <div class="relative mb-4">
-            <label for="phone" class="form-label block text-sm">Phone Number:</label>
-            <input type="tel" id="phone" name="phone" required
-              class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded py-2 px-3 mt-1 focus:outline-none focus:ring-2 focus:ring-indigo-600">
-          </div>
-
-          <div class="relative mb-4">
-            <button type="button"
-              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600"
-              onclick="toggleModal()">Select Tags</button>
-          </div>
-
-          <button type="submit"
-            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600">
-            Sign In
-          </button>
-        </form>
-
-        <p id="confirmationMessage" class="confirmation-message text-center mt-4"></p>
-      </div>
-    </div>
-  </section>
-
-  <div id="tagModal" class="fixed inset-0 bg-gray-900 bg-opacity-80 hidden flex items-center justify-center">
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
-      <h3 class="text-white text-lg font-medium mb-4">Select Tags</h3>
-      <form id="tagForm">
-        <div class="relative mb-4">
-          <label class="flex items-center">
-            <input id="btech" type="checkbox" value="B.Tech" class="form-checkbox">
-            <span class="ml-2">B.Tech</span>
-          </label>
+    <footer class="bg-gray-900 py-6">
+        <div class="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between">
+            <a href="#" class="flex items-center text-white">
+                <div class="header-logo">
+                    <img src="NSUT_logo-removebg-preview.png" height="50" width="50" alt="NSUT Logo">
+                </div>
+                <span class="ml-3 text-xl font-bold">NSUT LLM</span>
+            </a>
+            <p class="text-sm text-gray-500 mt-4 sm:mt-0">© 2024 NSUT LLM — All Rights Reserved</p>
+            <div class="flex mt-4 sm:mt-0">
+                <a href="#" class="text-gray-400 hover:text-white mx-2">
+                    <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
+                        <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-white mx-2">
+                    <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
+                        <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-white mx-2">
+                    <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
+                        <path
+                            d="M16 8a6 6 0 11-12 0 6 6 0 0112 0zm-5-2h2v5h-2V6zm0 7h2v2h-2v-2zm12 5v2h-8v-2h8z">
+                        </path>
+                    </svg>
+                </a>
+            </div>
         </div>
-        <div class="relative mb-4">
-          <label class="flex items-center">
-            <input id="bba" type="checkbox" value="BBA" class="form-checkbox">
-            <span class="ml-2">BBA</span>
-          </label>
-        </div>
-        <div class="relative mb-4">
-          <label class="flex items-center">
-            <input id="mba" type="checkbox" value="MBA" class="form-checkbox">
-            <span class="ml-2">MBA</span>
-          </label>
-        </div>
-        <div class="relative mb-4">
-          <label class="flex items-center">
-            <input id="mtech" type="checkbox" value="M.Tech" class="form-checkbox">
-            <span class="ml-2">M.Tech</span>
-          </label>
-        </div>
-        <div class="relative mb-4">
-          <label class="flex items-center">
-            <input id="backlog" type="checkbox" value="Backlog/Improvement" class="form-checkbox">
-            <span class="ml-2">Backlog/Improvement</span>
-          </label>
-        </div>
-        <div class="relative mb-4">
-          <label class="flex items-center">
-            <input id="rollno" type="checkbox" value="My Rollno." class="form-checkbox">
-            <span class="ml-2">My Rollno.</span>
-          </label>
-        </div>
+    </footer>
 
-        <div class="flex justify-end">
-          <button type="button"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600"
-            onclick="toggleModal()">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
+    <script>
+        const csvData = []; // Array to store all form submissions
 
-  <!-- Enhanced Modal with ARIA Attributes -->
-<div id="tagModal" class="fixed inset-0 bg-gray-900 bg-opacity-80 hidden flex items-center justify-center" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
-  <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
-    <h3 id="modalTitle" class="text-white text-lg font-medium mb-4">Select Tags</h3>
-    <form id="tagForm">
-      <!-- Form elements here -->
-      <div class="flex justify-end">
-        <button type="button"
-          class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600"
-          onclick="toggleModal()">Save</button>
-      </div>
-    </form>
-  </div>
-</div>
+        function toggleModal() {
+            const modal = document.getElementById('tagModal');
+            modal.classList.toggle('hidden');
+        }
 
-<!-- JavaScript for Modal Accessibility -->
-<script>
-  function toggleModal() {
-    const modal = document.getElementById('tagModal');
-    const isHidden = modal.classList.toggle('hidden');
-    modal.setAttribute('aria-hidden', isHidden);
-    if (!isHidden) {
-      document.querySelector('#tagForm').querySelector('input').focus();
-    }
-  }
-</script>
+        function generateCSV(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
 
+            // Get form data
+            const form = document.getElementById('studentForm');
+            const formData = new FormData(form);
 
-  <footer class="bg-gray-900 py-6">
-    <div class="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between">
-      <a href="#" class="flex items-center text-white">
-        <div class="header-logo">
-          <img src="NSUT_logo-removebg-preview.png" height="50" width="50" alt="NSUT Logo">
-        </div>
-        <span class="ml-3 text-xl font-bold">NSUT LLM</span>
-      </a>
-      <p class="text-sm text-gray-500 mt-4 sm:mt-0">© 2024 NSUT LLM — All Rights Reserved</p>
-      <div class="flex mt-4 sm:mt-0">
-        <a href="#" class="text-gray-400 hover:text-white mx-2">
-          <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
-            <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
-          </svg>
-        </a>
-        <a href="#" class="text-gray-400 hover:text-white mx-2">
-          <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
-            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
-          </svg>
-        </a>
-        <a href="#" class="text-gray-400 hover:text-white mx-2">
-          <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
-            <path
-              d="M16 8a6 6 0 11-12 0 6 6 0 0112 0zm-5-2h2v5h-2V6zm0 7h2v2h-2v-2zm12 5v2h-8v-2h8z">
-            </path>
-          </svg>
-        </a>
-      </div>
-    </div>
-  </footer>
+            // Prepare data for the CSV
+            const data = [
+                formData.get('rollNumber'),
+                formData.get('email'),
+                formData.get('phone')
+            ];
 
-  <script>
-    function toggleModal() {
-      const modal = document.getElementById('tagModal');
-      modal.classList.toggle('hidden');
-    }
-  </script>
+            // Add data to the CSV data array
+            csvData.push(data);
 
+            // Optional: Show confirmation message
+            document.getElementById('confirmationMessage').textContent = 'Data collected successfully!';
+
+            // Reset the form
+            form.reset();
+        }
+
+        function downloadCSV() {
+            // Check if there's data to download
+            if (csvData.length === 0) {
+                document.getElementById('confirmationMessage').textContent = 'No data to download.';
+                return;
+            }
+
+            // Prepare CSV content
+            const csvContent = 'data:text/csv;charset=utf-8,' +
+                'Roll Number,Email,Phone\n' +
+                csvData.map(row => row.join(',')).join('\n') + '\n';
+
+            // Create a link element and trigger download
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', 'student_data.csv');
+            document.body.appendChild(link); // Required for Firefox
+            link.click();
+            document.body.removeChild(link); // Remove the link after triggering download
+        }
+
+        // Attach event listener to the form submit event
+        document.getElementById('studentForm').addEventListener('submit', generateCSV);
+
+        // Optional: Add a button to download all collected data
+        document.getElementById('downloadCSVButton').addEventListener('click', downloadCSV);
+    </script>
 </body>
 
 </html>
+
+
+<<<<<<< HEAD
+</html>
+=======
+</html>
+>>>>>>> 3a3ea72df751fec6118cb66f59d0d1634fab29dd
