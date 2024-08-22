@@ -81,12 +81,7 @@ def update_CSV(notice_csv_path = r'database\notice.csv'):
         else:
             break
 def main():
-    while True:
-        # infinite loop
-        update_CSV()
-
-        # Wait for 20 minutes
-        time.sleep(1200)  # 1200 seconds = 20 minutes
+    update_CSV()
 
 if __name__ == "__main__":
     # defining soup
