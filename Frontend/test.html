@@ -32,14 +32,14 @@
         <div class="container mx-auto flex items-center justify-between px-6">
             <a href="#" class="flex items-center text-white">
                 <div class="header-logo">
-                    <img src="NSUT_logo-removebg-preview.png" height="50" width="50" alt="NSUT Logo">
+                    <img src="/static/NSUT_logo-removebg-preview.png" height="50" width="50" alt="NSUT Logo">
                 </div>
                 <span class="ml-3 text-xl font-bold">NSUT LLM</span>
             </a>
         </div>
     </header>
-<hr>
-<hr>
+    <hr>
+    <hr>
     <section class="bg-gray-900 py-24">
         <div class="container mx-auto px-6">
             <div class="lg:w-3/5 md:w-1/2 mx-auto mb-10 text-center">
@@ -53,7 +53,7 @@
 
             <div class="bg-gray-800 bg-opacity-60 rounded-lg p-8 max-w-md mx-auto">
                 <h2 class="text-white text-lg font-medium mb-5 text-center">Student Data Form</h2>
-                <form id="studentForm">
+                <form id="studentForm" action="/submit" method="post">
                     <div class="relative mb-4">
                         <label for="rollNumber" class="form-label block text-sm">Roll Number (Alpha Numeric):</label>
                         <input type="text" id="rollNumber" name="rollNumber" required
@@ -78,11 +78,13 @@
                             onclick="toggleModal()">Select Tags</button>
                     </div>
 
-          <button type="submit"
-            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600">
-            Sign In
-          </button>
-        </form>
+                    <input type="hidden" id="tags" name="tags" value="">
+
+                    <button type="submit"
+                        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                        Submit
+                    </button>
+                </form>
 
                 <p id="confirmationMessage" class="confirmation-message text-center mt-4"></p>
             </div>
@@ -133,7 +135,7 @@
                 <div class="flex justify-end">
                     <button type="button"
                         class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-600"
-                        onclick="toggleModal()">Save</button>
+                        onclick="saveTags()">Save</button>
                 </div>
             </form>
         </div>
@@ -146,7 +148,7 @@
         <div class="container mx-auto px-6 flex flex-col sm:flex-row items-center justify-between">
             <a href="#" class="flex items-center text-white">
                 <div class="header-logo">
-                    <img src="NSUT_logo-removebg-preview.png" height="50" width="50" alt="NSUT Logo">
+                    <img src="/static/NSUT_logo-removebg-preview.png" height="50" width="50" alt="NSUT Logo">
                 </div>
                 <span class="ml-3 text-xl font-bold">NSUT LLM</span>
             </a>
@@ -164,9 +166,7 @@
                 </a>
                 <a href="#" class="text-gray-400 hover:text-white mx-2">
                     <svg fill="currentColor" class="w-6 h-6" viewBox="0 0 24 24">
-                        <path
-                            d="M16 8a6 6 0 11-12 0 6 6 0 0112 0zm-5-2h2v5h-2V6zm0 7h2v2h-2v-2zm12 5v2h-8v-2h8z">
-                        </path>
+                        <path d="M16 8a6 6 0 11-12 0 6 6 0 0112 0zm-5-2h2v5h-2V6zm0 7h2v2h-2v-2zm12 5v2h-8v-2h8z"></path>
                     </svg>
                 </a>
             </div>
@@ -174,72 +174,45 @@
     </footer>
 
     <script>
-        const csvData = []; // Array to store all form submissions
-
         function toggleModal() {
             const modal = document.getElementById('tagModal');
             modal.classList.toggle('hidden');
         }
 
-        function generateCSV(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-
-            // Get form data
-            const form = document.getElementById('studentForm');
-            const formData = new FormData(form);
-
-            // Prepare data for the CSV
-            const data = [
-                formData.get('rollNumber'),
-                formData.get('email'),
-                formData.get('phone')
-            ];
-
-            // Add data to the CSV data array
-            csvData.push(data);
-
-            // Optional: Show confirmation message
-            document.getElementById('confirmationMessage').textContent = 'Data collected successfully!';
-
-            // Reset the form
-            form.reset();
+        function saveTags() {
+            const tags = [];
+            document.querySelectorAll('#tagForm input[type=checkbox]:checked').forEach(checkbox => {
+                tags.push(checkbox.value);
+            });
+            document.getElementById('tags').value = tags.join(',');
+            toggleModal(); // Close the modal after saving
         }
 
-        function downloadCSV() {
-            // Check if there's data to download
-            if (csvData.length === 0) {
-                document.getElementById('confirmationMessage').textContent = 'No data to download.';
-                return;
-            }
+        document.getElementById('studentForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
 
-            // Prepare CSV content
-            const csvContent = 'data:text/csv;charset=utf-8,' +
-                'Roll Number,Email,Phone\n' +
-                csvData.map(row => row.join(',')).join('\n') + '\n';
+            // Serialize the form data
+            const formData = new FormData(this);
 
-            // Create a link element and trigger download
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement('a');
-            link.setAttribute('href', encodedUri);
-            link.setAttribute('download', 'student_data.csv');
-            document.body.appendChild(link); // Required for Firefox
-            link.click();
-            document.body.removeChild(link); // Remove the link after triggering download
-        }
-
-        // Attach event listener to the form submit event
-        document.getElementById('studentForm').addEventListener('submit', generateCSV);
-
-        // Optional: Add a button to download all collected data
-        document.getElementById('downloadCSVButton').addEventListener('click', downloadCSV);
+            // Send form data to the server using fetch API
+            fetch('/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display success message
+                document.getElementById('confirmationMessage').textContent = data.message;
+                // Optionally reset the form
+                this.reset();
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('Error:', error);
+                document.getElementById('confirmationMessage').textContent = 'An error occurred.';
+            });
+        });
     </script>
 </body>
 
 </html>
-
-
-<<<<<<< HEAD
-</html>
-=======
-</html>
->>>>>>> 3a3ea72df751fec6118cb66f59d0d1634fab29dd
