@@ -1,0 +1,1 @@
+web: python applications.py && python main.py
