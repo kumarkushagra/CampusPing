@@ -21,7 +21,7 @@ from Download_pdf.ocr_pdf import *
 
 
 def main():
-    input_file = r"Fetch_new_notices\notice.csv"
+    input_file = r"database\notice.csv"
     output_file = "output.csv"
 
     # Read the input CSV file using pandas
