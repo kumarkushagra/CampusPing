@@ -4,7 +4,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import os
 import csv
 
-TOKEN: typing.Final = '7418556410:AAGQ1Rz01PRCa8Z0qtHV33_twEspGY92rd0'
+TOKEN: typing.Final = '7418556410:AAE4AIoE4aZAPQ0g5GcpFIVwMmf53DIx9ZU'
 BOT_USERNAME: typing.Final = '@NSUT_IMS_notification_bot'
 CSV_FILE: typing.Final = 'output.csv'
 USER_DATA_FILE: typing.Final = 'user_data.csv'
