@@ -12,23 +12,25 @@ async def send_message_to_chat_ids():
     bot = Bot(token=TOKEN)
 
     try:
-        # Read the latest notification from the CSV file
+        # Read notifications from the CSV file
         notifications = []
         with open(NOTIFICATIONS_FILE, mode='r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                notifications.append(row)
-
-            if not notifications:
+            reader = list(csv.DictReader(file))
+            if not reader:
                 print("No notifications available.")
                 return
 
-            # Extract the latest notification details
-            latest_notification = notifications[-1]
+            # Get the last notification
+            latest_notification = reader[-1]
+            if latest_notification.get('telegram_notification_sent') == '1':
+                print("Notice already sent.")
+                return
+
+            # Extract notification details
             summary = latest_notification.get('LLM_summary', '').strip()
             link = "https://www.imsnsit.org/imsnsit/notifications.php"
             tags = latest_notification.get('tags', '').strip()
-            
+
             # Process tags
             try:
                 # Evaluate the tags safely to handle extra characters
@@ -75,6 +77,18 @@ async def send_message_to_chat_ids():
                         print(f"Failed to send message to chat ID {chat_id}. Error: {e}")
                 else:
                     print(f"User {chat_id} does not have any common tags with the notification.")
+
+        # Update the CSV file to mark the notification as sent
+        with open(NOTIFICATIONS_FILE, mode='r', encoding='utf-8') as file:
+            reader = list(csv.DictReader(file))
+        with open(NOTIFICATIONS_FILE, mode='w', encoding='utf-8', newline='') as file:
+            fieldnames = reader[0].keys()
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            for row in reader:
+                if row.get('S. no.') == latest_notification.get('S. no.'):
+                    row['telegram_notification_sent'] = '1'
+                writer.writerow(row)
 
     except FileNotFoundError as fnf_error:
         print(f"File not found error: {fnf_error}")
