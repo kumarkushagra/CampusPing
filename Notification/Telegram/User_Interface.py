@@ -1,6 +1,6 @@
 import typing
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 import os
 import csv
 
@@ -8,6 +8,9 @@ TOKEN: typing.Final = '7418556410:AAGQ1Rz01PRCa8Z0qtHV33_twEspGY92rd0'
 BOT_USERNAME: typing.Final = '@NSUT_IMS_notification_bot'
 CSV_FILE: typing.Final = 'output.csv'
 USER_DATA_FILE: typing.Final = 'user_data.csv'
+
+# Define the states for ConversationHandler
+ENTER_NAME, ENTER_ROLL_NUMBER, EDIT_TAGS, SEARCH = range(4)
 
 # Utility functions for CSV operations
 def read_user_data():
@@ -39,13 +42,20 @@ def write_user_data(user_data):
 # Commands
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('''Hello! How may I help you?
+                                    
+You can give us your Name and Roll no, and this bot will search your Name and Roll Number in the latest notices and notify you if found.
 
-i) View latest notification by clicking /latest_notifications
-ii) View all notifications by clicking /view_all_notifications
-iii) Search any particular term in all the notifications by typing /search <term> 
+This bot also sends you summary of all the latest notices released, you can edit your tags to only recive relevant notifications.
+                                    
+/enter_name : Enter your name
+/enter_roll_number : Enter your Roll number
+/latest_notifications : View 5 latest notification
+/search : Search any particular term in all the notifications
+/view_all_tags : See all the tags
+/enter_tags : Edit your tags 
+/show_my_data : Shows Your user data
 
-This bot will send you automatic notifications in the future. You can select which type of notifications you would like to receive.
-You can do this by selecting tags from /view_all_tags and then /edit_tags.''')
+                                    ''')
 
 def read_notifications():
     notifications = []
@@ -66,21 +76,21 @@ async def latest_notifications_command(update: Update, context: ContextTypes.DEF
     notifications = read_notifications()
     
     # Get the latest 5 notifications
-    latest_notifications = notifications[-5:]
+    latest_notifications = notifications[-5:][::-1]
 
     # Format notifications with indexing and new lines
     formatted_notifications = "\n\n".join(f"{i+1}. {notification['LLM_summary']}\n\n{notification['link_to_notice']}\n**{', '.join(notification['tags'])}**\n" for i, notification in enumerate(latest_notifications))
     if not formatted_notifications:
         formatted_notifications = "No notifications available."
     
-    await update.message.reply_text(formatted_notifications + "\n\n\nPress /view_all_notifications to see all previous notifications.")
+    await update.message.reply_text(formatted_notifications)
 
-async def search_notifications_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    search_term = ' '.join(context.args)
-    if not search_term:
-        await update.message.reply_text("Please provide a search term: /search <term>")
-        return
+async def search_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Please enter the search term below:")
+    return SEARCH
 
+async def handle_search(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    search_term = update.message.text
     notifications = read_notifications()
 
     # Search notifications for the term
@@ -92,6 +102,8 @@ async def search_notifications_command(update: Update, context: ContextTypes.DEF
         formatted_notifications = "No matching notifications found."
     
     await update.message.reply_text(formatted_notifications)
+
+    return ConversationHandler.END
 
 async def view_all_tags_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if os.path.exists(CSV_FILE):
@@ -118,45 +130,13 @@ async def view_all_tags_command(update: Update, context: ContextTypes.DEFAULT_TY
     else:
         await update.message.reply_text("No notifications file found.")
 
-async def edit_tags_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def enter_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Please enter your full name below:")
+    return ENTER_NAME
+
+async def handle_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     chat_id = str(update.message.chat.id)
-    new_tags = ' '.join(context.args)
-
-    if not new_tags:
-        await update.message.reply_text("Please provide tags to update: /edit_tags <tag1>,<tag2>....\nTo view all tags press /view_all_tags")
-        return
-
-    # Read existing user data
-    user_data = read_user_data()
-
-    # Update or add the chat ID and tags
-    if chat_id in user_data:
-        user_data[chat_id]['Tags'] = new_tags
-    else:
-        user_data[chat_id] = {'Name': '', 'Tags': new_tags, 'Roll Number': ''}
-
-    # Write updated user data to file
-    write_user_data(user_data)
-
-    await update.message.reply_text(f"Tags updated to: {new_tags}")
-
-async def show_tags_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = str(update.message.chat.id)
-    user_data = read_user_data()
-
-    if chat_id in user_data:
-        tags = user_data[chat_id]['Tags']
-        await update.message.reply_text(f"Your tags: {tags}")
-    else:
-        await update.message.reply_text("No tags found for your chat ID.")
-
-async def enter_name_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = str(update.message.chat.id)
-    name = ' '.join(context.args)
-
-    if not name:
-        await update.message.reply_text("Please provide your name: /enter_name <name>")
-        return
+    name = update.message.text
 
     # Read existing user data
     user_data = read_user_data()
@@ -172,13 +152,15 @@ async def enter_name_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     await update.message.reply_text(f"Name updated to: {name}")
 
-async def enter_roll_number_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    chat_id = str(update.message.chat.id)
-    roll_number = ' '.join(context.args)
+    return ConversationHandler.END
 
-    if not roll_number:
-        await update.message.reply_text("Please provide your roll number: /enter_roll_number <roll_number>")
-        return
+async def enter_roll_number(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Please enter your roll number below:")
+    return ENTER_ROLL_NUMBER
+
+async def handle_roll_number(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    chat_id = str(update.message.chat.id)
+    roll_number = update.message.text
 
     # Read existing user data
     user_data = read_user_data()
@@ -193,6 +175,53 @@ async def enter_roll_number_command(update: Update, context: ContextTypes.DEFAUL
     write_user_data(user_data)
 
     await update.message.reply_text(f"Roll number updated to: {roll_number}")
+
+    return ConversationHandler.END
+
+async def edit_tags(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("""Please enter the new tags below (comma-separated):
+To view all tags press /view_all_tags
+                                    """)
+    return EDIT_TAGS
+
+async def handle_tags(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    chat_id = str(update.message.chat.id)
+    new_tags = update.message.text
+
+    # Read existing user data
+    user_data = read_user_data()
+
+    # Update or add the chat ID and tags
+    if chat_id in user_data:
+        user_data[chat_id]['Tags'] = new_tags
+    else:
+        user_data[chat_id] = {'Name': '', 'Tags': new_tags, 'Roll Number': ''}
+
+    # Write updated user data to file
+    write_user_data(user_data)
+
+    await update.message.reply_text(f"Tags updated to: {new_tags}")
+
+    return ConversationHandler.END
+
+async def show_my_data_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = str(update.message.chat.id)
+    user_data = read_user_data()
+
+    if chat_id in user_data:
+        name = user_data[chat_id].get('Name', 'Not provided')
+        roll_number = user_data[chat_id].get('Roll Number', 'Not provided')
+        tags = user_data[chat_id].get('Tags', 'No tags assigned')
+        
+        await update.message.reply_text(
+            f"Here is your data:\n\n"
+            f"Name: {name}\n"
+            f"Roll Number: {roll_number}\n"
+            f"Tags: {tags}"
+        )
+    else:
+        await update.message.reply_text("No data found for your chat ID. Please enter your name and roll number using the respective commands.")
+
 
 # Responses to updated via AI
 def handle_responses(text: str) -> str:
@@ -258,16 +287,51 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 if __name__ == '__main__':
     app = Application.builder().token(TOKEN).build()
-    
+
+    # Define the conversation handlers
+    enter_name_handler = ConversationHandler(
+        entry_points=[CommandHandler('enter_name', enter_name)],
+        states={
+            ENTER_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_name)]
+        },
+        fallbacks=[]
+    )
+
+    enter_roll_number_handler = ConversationHandler(
+        entry_points=[CommandHandler('enter_roll_number', enter_roll_number)],
+        states={
+            ENTER_ROLL_NUMBER: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_roll_number)]
+        },
+        fallbacks=[]
+    )
+
+    edit_tags_handler = ConversationHandler(
+        entry_points=[CommandHandler('enter_tags', edit_tags)],
+        states={
+            EDIT_TAGS: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_tags)]
+        },
+        fallbacks=[]
+    )
+
+    search_handler = ConversationHandler(
+        entry_points=[CommandHandler('search', search_command)],
+        states={
+            SEARCH: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_search)]
+        },
+        fallbacks=[]
+    )
+
     # Commands
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('latest_notifications', latest_notifications_command))
-    app.add_handler(CommandHandler('search', search_notifications_command))
     app.add_handler(CommandHandler('view_all_tags', view_all_tags_command))
-    app.add_handler(CommandHandler('edit_tags', edit_tags_command))
-    app.add_handler(CommandHandler('show_my_tags', show_tags_command))
-    app.add_handler(CommandHandler('enter_name', enter_name_command))
-    app.add_handler(CommandHandler('enter_roll_number', enter_roll_number_command))
+    app.add_handler(CommandHandler('show_my_data', show_my_data_command))
+    
+    # Add conversation handlers
+    app.add_handler(enter_name_handler)
+    app.add_handler(enter_roll_number_handler)
+    app.add_handler(edit_tags_handler)
+    app.add_handler(search_handler)
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
