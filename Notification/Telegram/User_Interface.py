@@ -13,23 +13,25 @@ USER_DATA_FILE: typing.Final = 'user_data.csv'
 ENTER_NAME, ENTER_ROLL_NUMBER, EDIT_TAGS, SEARCH = range(4)
 
 # Utility functions for CSV operations
-def read_user_data():
+def read_user_data() -> dict:
     user_data = {}
     if os.path.exists(USER_DATA_FILE):
         try:
             with open(USER_DATA_FILE, mode='r', encoding='utf-8') as file:
                 reader = csv.DictReader(file)
-                for row in reader:
-                    chat_id = row['Chat ID']
-                    name = row['Name']
-                    tags = row['Tags']
-                    roll_number = row['Roll Number']
-                    user_data[chat_id] = {'Name': name, 'Tags': tags, 'Roll Number': roll_number}
+                user_data = {
+                    row['Chat ID']: {
+                        'Name': row['Name'],
+                        'Tags': row['Tags'],
+                        'Roll Number': row['Roll Number']
+                    }
+                    for row in reader
+                }
         except Exception as e:
             print(f"Error reading user data: {e}")
     return user_data
 
-def write_user_data(user_data):
+def write_user_data(user_data: dict):
     try:
         with open(USER_DATA_FILE, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.DictWriter(file, fieldnames=["Chat ID", "Name", "Tags", "Roll Number"])
@@ -39,13 +41,28 @@ def write_user_data(user_data):
     except Exception as e:
         print(f"Error writing user data: {e}")
 
+def read_tags_from_csv() -> set:
+    tags = set()
+    if os.path.exists(CSV_FILE):
+        try:
+            with open(CSV_FILE, "r", encoding='utf-8') as file:
+                reader = csv.DictReader(file)
+                tags = {
+                    tag.strip().strip('[]').strip("'")
+                    for row in reader
+                    for tag in row.get('tags', '').split(",") if tag.strip()
+                }
+        except Exception as e:
+            print(f"Error reading tags: {e}")
+    return tags
+
 # Commands
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('''Hello! How may I help you?
                                     
 You can give us your Name and Roll no, and this bot will search your Name and Roll Number in the latest notices and notify you if found.
 
-This bot also sends you summary of all the latest notices released, you can edit your tags to only recive relevant notifications.
+This bot also sends you summary of all the latest notices released, you can edit your tags to only receive relevant notifications.
                                     
 /enter_name : Enter your name
 /enter_roll_number : Enter your Roll number
@@ -57,19 +74,22 @@ This bot also sends you summary of all the latest notices released, you can edit
 
                                     ''')
 
-def read_notifications():
+def read_notifications() -> list:
     notifications = []
-    try:
-        with open(CSV_FILE, mode='r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                notifications.append({
-                    'LLM_summary': row['LLM_summary'],
-                    'link_to_notice': "https://www.imsnsit.org/imsnsit/notifications.php",
-                    'tags': row['tags'].split(', ')
-                })
-    except Exception as e:
-        print(f"Error reading notifications: {e}")
+    if os.path.exists(CSV_FILE):
+        try:
+            with open(CSV_FILE, mode='r', encoding='utf-8') as file:
+                reader = csv.DictReader(file)
+                notifications = [
+                    {
+                        'LLM_summary': row['LLM_summary'],
+                        'link_to_notice': "https://www.imsnsit.org/imsnsit/notifications.php",
+                        'tags': row['tags'].split(', ')
+                    }
+                    for row in reader
+                ]
+        except Exception as e:
+            print(f"Error reading notifications: {e}")
     return notifications
 
 async def latest_notifications_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -79,7 +99,10 @@ async def latest_notifications_command(update: Update, context: ContextTypes.DEF
     latest_notifications = notifications[-5:][::-1]
 
     # Format notifications with indexing and new lines
-    formatted_notifications = "\n\n".join(f"{i+1}. {notification['LLM_summary']}\n\n{notification['link_to_notice']}\n**{', '.join(notification['tags'])}**\n" for i, notification in enumerate(latest_notifications))
+    formatted_notifications = "\n\n".join(
+        f"{i+1}. {notification['LLM_summary']}\n\n{notification['link_to_notice']}\n**{', '.join(notification['tags'])}**\n"
+        for i, notification in enumerate(latest_notifications)
+    )
     if not formatted_notifications:
         formatted_notifications = "No notifications available."
     
@@ -94,10 +117,16 @@ async def handle_search(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     notifications = read_notifications()
 
     # Search notifications for the term
-    matching_notifications = [notification for notification in notifications if search_term.lower() in notification['LLM_summary'].lower()]
+    matching_notifications = [
+        notification for notification in notifications
+        if search_term.lower() in notification['LLM_summary'].lower()
+    ]
     
     # Format notifications with indexing and new lines
-    formatted_notifications = "\n\n".join(f"{i+1}. {notification['LLM_summary']}\n\n{notification['link_to_notice']}\n**{', '.join(notification['tags'])}**\n" for i, notification in enumerate(matching_notifications))
+    formatted_notifications = "\n\n".join(
+        f"{i+1}. {notification['LLM_summary']}\n\n{notification['link_to_notice']}\n**{', '.join(notification['tags'])}**\n"
+        for i, notification in enumerate(matching_notifications)
+    )
     if not formatted_notifications:
         formatted_notifications = "No matching notifications found."
     
@@ -106,29 +135,13 @@ async def handle_search(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     return ConversationHandler.END
 
 async def view_all_tags_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if os.path.exists(CSV_FILE):
-        try:
-            with open(CSV_FILE, "r", encoding='utf-8') as file:
-                reader = csv.DictReader(file)
-                tags = set()
-                for row in reader:
-                    current_tags = row.get('tags', '').strip()
-                    if current_tags:  # Check if there are any tags
-                        # Remove unwanted characters and clean up tags
-                        current_tags_list = [tag.strip().strip('[]').strip("'").strip() for tag in current_tags.split(",") if tag.strip()]
-                        tags.update(current_tags_list)
-                
-                if tags:
-                    unique_tags = sorted(tags)
-                    # Create a formatted string with no unwanted characters
-                    formatted_tags = "\n".join(unique_tags)
-                    await update.message.reply_text(f"Unique Tags:\n{formatted_tags}")
-                else:
-                    await update.message.reply_text("No tags found.")
-        except Exception as e:
-            await update.message.reply_text(f"Error reading tags: {e}")
+    tags = read_tags_from_csv()
+    if tags:
+        unique_tags = sorted(tags)
+        formatted_tags = "\n".join(unique_tags)
+        await update.message.reply_text(f"Unique Tags:\n{formatted_tags}")
     else:
-        await update.message.reply_text("No notifications file found.")
+        await update.message.reply_text("No tags found.")
 
 async def enter_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("Please enter your full name below:")
@@ -142,10 +155,8 @@ async def handle_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     user_data = read_user_data()
 
     # Update or add the chat ID and name
-    if chat_id in user_data:
-        user_data[chat_id]['Name'] = name
-    else:
-        user_data[chat_id] = {'Name': name, 'Tags': '', 'Roll Number': ''}
+    user_data[chat_id] = user_data.get(chat_id, {'Name': '', 'Tags': '', 'Roll Number': ''})
+    user_data[chat_id]['Name'] = name
 
     # Write updated user data to file
     write_user_data(user_data)
@@ -166,10 +177,8 @@ async def handle_roll_number(update: Update, context: ContextTypes.DEFAULT_TYPE)
     user_data = read_user_data()
 
     # Update or add the chat ID and roll number
-    if chat_id in user_data:
-        user_data[chat_id]['Roll Number'] = roll_number
-    else:
-        user_data[chat_id] = {'Name': '', 'Tags': '', 'Roll Number': roll_number}
+    user_data[chat_id] = user_data.get(chat_id, {'Name': '', 'Tags': '', 'Roll Number': ''})
+    user_data[chat_id]['Roll Number'] = roll_number
 
     # Write updated user data to file
     write_user_data(user_data)
@@ -192,10 +201,8 @@ async def handle_tags(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     user_data = read_user_data()
 
     # Update or add the chat ID and tags
-    if chat_id in user_data:
-        user_data[chat_id]['Tags'] = new_tags
-    else:
-        user_data[chat_id] = {'Name': '', 'Tags': new_tags, 'Roll Number': ''}
+    user_data[chat_id] = user_data.get(chat_id, {'Name': '', 'Tags': '', 'Roll Number': ''})
+    user_data[chat_id]['Tags'] = new_tags
 
     # Write updated user data to file
     write_user_data(user_data)
@@ -222,7 +229,6 @@ async def show_my_data_command(update: Update, context: ContextTypes.DEFAULT_TYP
     else:
         await update.message.reply_text("No data found for your chat ID. Please enter your name and roll number using the respective commands.")
 
-
 # Responses to updated via AI
 def handle_responses(text: str) -> str:
     processed = text.lower()
@@ -245,20 +251,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'User({update.message.chat.id}) in {message_type}: "{text}"')
 
     # Get all available tags
-    if os.path.exists(CSV_FILE):
-        try:
-            with open(CSV_FILE, "r", encoding='utf-8') as file:
-                reader = csv.DictReader(file)
-                available_tags = set()
-                for row in reader:
-                    current_tags = row['tags'].strip()
-                    current_tags_list = [tag.strip() for tag in current_tags.split(",")]
-                    available_tags.update(current_tags_list)
-        except Exception as e:
-            await update.message.reply_text(f"Error reading tags: {e}")
-            return
-    else:
-        available_tags = set()
+    available_tags = read_tags_from_csv()
 
     # Saving Chat ID in a CSV file
     chat_id = str(update.message.chat.id)
