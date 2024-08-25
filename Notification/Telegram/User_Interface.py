@@ -21,7 +21,7 @@ This bot also sends you summary of all the latest notices released, you can edit
                                     
 /enter_name : Enter your name
 /enter_roll_number : Enter your Roll number
-/enter_email : Enter your Email
+/enter_email : Enter your Email to get notified via Email too
 /latest_notifications : View 5 latest notification
 /search : Search any particular term in all the notifications
 /view_all_tags : See all the tags

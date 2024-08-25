@@ -5,7 +5,7 @@ from telegram import Bot
 from telegram.error import TelegramError
 
 # Your bot token
-TOKEN = '7418556410:AAGQ1Rz01PRCa8Z0qtHV33_twEspGY92rd0'
+TOKEN = '7418556410:AAE4AIoE4aZAPQ0g5GcpFIVwMmf53DIx9ZU'
 bot = Bot(token=TOKEN)
 
 async def send_messages():

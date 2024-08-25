@@ -4,7 +4,7 @@ import asyncio
 import csv
 import ast  # For safely evaluating string representations of Python literals
 
-TOKEN: typing.Final = '7418556410:AAGQ1Rz01PRCa8Z0qtHV33_twEspGY92rd0'
+TOKEN: typing.Final = '7418556410:AAE4AIoE4aZAPQ0g5GcpFIVwMmf53DIx9ZU'
 USER_DATA_FILE: typing.Final = 'user_data.csv'
 NOTIFICATIONS_FILE: typing.Final = 'output.csv'
 
