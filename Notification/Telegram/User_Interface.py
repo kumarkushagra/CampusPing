@@ -9,7 +9,7 @@ CSV_FILE: typing.Final = 'output.csv'
 USER_DATA_FILE: typing.Final = 'user_data.csv'
 
 # Define the states for ConversationHandler
-ENTER_NAME, ENTER_ROLL_NUMBER, EDIT_TAGS, SEARCH,ENTER_EMAIL = range(5)
+ENTER_NAME, ENTER_ROLL_NUMBER, EDIT_TAGS, SEARCH,ENTER_EMAIL,ENTER_PHONE_NUMBER = range(6)
 
 # Commands
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -22,6 +22,7 @@ This bot also sends you summary of all the latest notices released, you can edit
 /enter_name : Enter your name
 /enter_roll_number : Enter your Roll number
 /enter_email : Enter your Email to get notified via Email too
+/enter_phone_number : Enter your Number to get notified via SMS too
 /latest_notifications : View 5 latest notification
 /search : Search any particular term in all the notifications
 /view_all_tags : See all the tags
@@ -170,6 +171,28 @@ async def handle_tags(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
 
     return ConversationHandler.END
 
+async def enter_phone_number(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Please enter your phone number below:")
+    return ENTER_PHONE_NUMBER
+
+async def handle_phone_number(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    chat_id = str(update.message.chat.id)
+    phone_number = update.message.text
+
+    # Read existing user data
+    user_data = read_user_data()
+
+    # Update or add the chat ID and phone number
+    user_data[chat_id] = user_data.get(chat_id, {'Name': '', 'Tags': '', 'Roll Number': '', 'Email': '', 'Phone Number': ''})
+    user_data[chat_id]['Phone Number'] = phone_number
+
+    # Write updated user data to file
+    write_user_data(user_data)
+
+    await update.message.reply_text(f"Phone number updated to: {phone_number}")
+
+    return ConversationHandler.END
+
 async def show_my_data_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = str(update.message.chat.id)
     user_data = read_user_data()
@@ -179,12 +202,14 @@ async def show_my_data_command(update: Update, context: ContextTypes.DEFAULT_TYP
         roll_number = user_data[chat_id].get('Roll Number', 'Not provided')
         tags = user_data[chat_id].get('Tags', 'No tags assigned')
         email = user_data[chat_id].get('Email', 'Not provided')
+        phone_number = user_data[chat_id].get('Phone Number', 'Not provided')
         
         await update.message.reply_text(
             f"Here is your data:\n\n"
             f"Name: {name}\n"
             f"Roll Number: {roll_number}\n"
             f"Email: {email}\n"
+            f"Phone Number: {phone_number}\n"
             f"Tags: {tags}"
         )
     else:
@@ -204,6 +229,7 @@ def handle_responses(text: str) -> str:
         return 'Type /latest_notifications to get the latest notifications'
     
     return "I don't understand. Type '/' to view actions."
+
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type = update.message.chat.type
@@ -236,8 +262,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print('Bot:', response)
     await update.message.reply_text(response)
 
+
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
+
 
 if __name__ == '__main__':
     app = Application.builder().token(TOKEN).build()
@@ -263,6 +291,14 @@ if __name__ == '__main__':
         entry_points=[CommandHandler('enter_email', enter_email)],
         states={
             ENTER_EMAIL: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_email)]
+        },
+        fallbacks=[]
+    )
+
+    enter_phone_number_handler = ConversationHandler(
+        entry_points=[CommandHandler('enter_phone_number', enter_phone_number)],
+        states={
+            ENTER_PHONE_NUMBER: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_phone_number)]
         },
         fallbacks=[]
     )
@@ -295,6 +331,7 @@ if __name__ == '__main__':
     app.add_handler(edit_tags_handler)
     app.add_handler(search_handler)
     app.add_handler(enter_email_handler)
+    app.add_handler(enter_phone_number_handler)
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
