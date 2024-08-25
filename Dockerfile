@@ -2,7 +2,7 @@
 FROM python:3.12-slim
 
 # Install Ghostscript and Tesseract OCR
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ghostscript \
     tesseract-ocr \
     tesseract-ocr-eng \
@@ -11,10 +11,11 @@ RUN apt-get update && apt-get install -y \
 # Set the working directory inside the Docker container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . .
+# Copy only the necessary files
+COPY requirements.txt ./
+COPY main.py ./
 
-# Install any Python dependencies from requirements.txt
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Command to run your Python script
