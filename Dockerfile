@@ -16,7 +16,7 @@ COPY requirements.txt ./
 COPY main.py ./
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Command to run your Python script
 CMD ["python", "main.py"]
