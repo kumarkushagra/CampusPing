@@ -9,7 +9,7 @@ CSV_FILE: typing.Final = 'output.csv'
 USER_DATA_FILE: typing.Final = 'user_data.csv'
 
 # Define the states for ConversationHandler
-ENTER_NAME, ENTER_ROLL_NUMBER, EDIT_TAGS, SEARCH = range(4)
+ENTER_NAME, ENTER_ROLL_NUMBER, EDIT_TAGS, SEARCH,ENTER_EMAIL = range(5)
 
 # Commands
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -21,6 +21,7 @@ This bot also sends you summary of all the latest notices released, you can edit
                                     
 /enter_name : Enter your name
 /enter_roll_number : Enter your Roll number
+/enter_email : Enter your Email
 /latest_notifications : View 5 latest notification
 /search : Search any particular term in all the notifications
 /view_all_tags : See all the tags
@@ -123,6 +124,28 @@ async def handle_roll_number(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     return ConversationHandler.END
 
+async def enter_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    await update.message.reply_text("Please enter your email address below:")
+    return ENTER_EMAIL
+
+async def handle_email(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    chat_id = str(update.message.chat.id)
+    email = update.message.text
+
+    # Read existing user data
+    user_data = read_user_data()
+
+    # Update or add the chat ID and email
+    user_data[chat_id] = user_data.get(chat_id, {'Name': '', 'Tags': '', 'Roll Number': '', 'Email': ''})
+    user_data[chat_id]['Email'] = email
+
+    # Write updated user data to file
+    write_user_data(user_data)
+
+    await update.message.reply_text(f"Email updated to: {email}")
+
+    return ConversationHandler.END
+
 async def edit_tags(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text("""Please enter the new tags below (comma-separated):
 To view all tags press /view_all_tags
@@ -155,11 +178,13 @@ async def show_my_data_command(update: Update, context: ContextTypes.DEFAULT_TYP
         name = user_data[chat_id].get('Name', 'Not provided')
         roll_number = user_data[chat_id].get('Roll Number', 'Not provided')
         tags = user_data[chat_id].get('Tags', 'No tags assigned')
+        email = user_data[chat_id].get('Email', 'Not provided')
         
         await update.message.reply_text(
             f"Here is your data:\n\n"
             f"Name: {name}\n"
             f"Roll Number: {roll_number}\n"
+            f"Email: {email}\n"
             f"Tags: {tags}"
         )
     else:
@@ -234,6 +259,14 @@ if __name__ == '__main__':
         fallbacks=[]
     )
 
+    enter_email_handler = ConversationHandler(
+        entry_points=[CommandHandler('enter_email', enter_email)],
+        states={
+            ENTER_EMAIL: [MessageHandler(filters.TEXT & ~filters.COMMAND, handle_email)]
+        },
+        fallbacks=[]
+    )
+
     edit_tags_handler = ConversationHandler(
         entry_points=[CommandHandler('enter_tags', edit_tags)],
         states={
@@ -261,6 +294,7 @@ if __name__ == '__main__':
     app.add_handler(enter_roll_number_handler)
     app.add_handler(edit_tags_handler)
     app.add_handler(search_handler)
+    app.add_handler(enter_email_handler)
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))

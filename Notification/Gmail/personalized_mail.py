@@ -7,8 +7,8 @@ from email.mime.text import MIMEText
 # Gmail configuration
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
-EMAIL_ADDRESS = 'imsnotificationsbot@gmail.com'
-EMAIL_PASSWORD = ''  # Use an app password if 2FA is enabled
+EMAIL_ADDRESS = 'imsnotificationbot@gmail.com'
+EMAIL_PASSWORD = 'gdxm cmzv mjpr dzyi'  # Use an app password if 2FA is enabled
 
 def send_email(to_email, subject, body):
     """Send an email using Gmail's SMTP server."""
