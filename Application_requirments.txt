@@ -1,0 +1,20 @@
+# For tesseract (https://github.com/UB-Mannheim/tesseract/wiki)
+
+sudo apt install tesseract-ocr
+sudo apt install libtesseract-dev
+
+# For ghostscript (https://ghostscript.com/releases/gsdnld.html)
+
+sudo apt install wget tar
+
+
+wget https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10012/ghostscript-10.01.2-linux-x86_64.tgz
+tar -xzf ghostscript-10.01.2-linux-x86_64.tgz
+cd ghostscript-10.01.2-linux-x86_64 (navigate to the directory)
+
+
+
+# Install ghostscript
+sudo cp gs-10.01.2-linux-x86_64 /usr/local/bin/gs
+sudo chmod +x /usr/local/bin/gs
+
