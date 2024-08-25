@@ -15,10 +15,10 @@ templates = Jinja2Templates(directory=".")
 @app.on_event("startup")
 async def startup_event():
     # Check if the CSV file exists; if not, create it with headers
-    if not os.path.exists("student_data.csv"):
-        with open("student_data.csv", "w", newline="") as csvfile:
+    if not os.path.exists("user_data.csv"):
+        with open("user_data.csv", "w", newline="") as csvfile:
             csvwriter = csv.writer(csvfile)
-            csvwriter.writerow(["Roll Number", "Email ID", "Phone", "Tags"])
+            csvwriter.writerow(["Name","Tags","Roll Number", "Email ID", "Phone", ])
 
 @app.get("/", response_class=HTMLResponse)
 async def get_form(request: Request):
@@ -26,15 +26,17 @@ async def get_form(request: Request):
 
 @app.post("/submit")
 async def submit_form(
+    name: str = Form(...),
+    tags: str = Form(...),
     rollNumber: str = Form(...),
     email: str = Form(...),
-    phone: str = Form(...),
-    tags: str = Form(...)
+    phone: str = Form(...)
+    
 ):
     # Append data to the CSV file
-    with open("student_data.csv", "a", newline="") as csvfile:
+    with open("user_data.csv", "a", newline="") as csvfile:
         csvwriter = csv.writer(csvfile)
-        csvwriter.writerow([rollNumber, email, phone, tags])
+        csvwriter.writerow([name, tags,rollNumber, email, phone ])
 
     return JSONResponse(content={"message": "Data submitted successfully!"})
 
