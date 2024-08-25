@@ -17,7 +17,8 @@ def read_user_data() -> dict:
                         'Name': row['Name'],
                         'Tags': row['Tags'],
                         'Roll Number': row['Roll Number'],
-                        'Email': row.get('Email', '')  # Handle case if Email is missing
+                        'Email': row.get('Email', ''),  # Handle case if Email is missing
+                        'Phone Number': row.get('Phone Number', '')  # Handle case if Phone Number is missing
                     }
                     for row in reader
                 }
@@ -28,7 +29,8 @@ def read_user_data() -> dict:
 def write_user_data(user_data: dict):
     try:
         with open(USER_DATA_FILE, mode='w', newline='', encoding='utf-8') as file:
-            writer = csv.DictWriter(file, fieldnames=["Chat ID", "Name", "Tags", "Roll Number", "Email"])
+            fieldnames = ["Chat ID", "Name", "Tags", "Roll Number", "Email", "Phone Number"]
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
             writer.writeheader()
             for chat_id, data in user_data.items():
                 writer.writerow({
@@ -36,11 +38,12 @@ def write_user_data(user_data: dict):
                     "Name": data['Name'],
                     "Tags": data['Tags'],
                     "Roll Number": data['Roll Number'],
-                    "Email": data['Email']
+                    "Email": data.get('Email', ''),  # Handle case if Email is missing
+                    "Phone Number": data.get('Phone Number', '')  # Handle case if Phone Number is missing
                 })
     except Exception as e:
         print(f"Error writing user data: {e}")
-        
+
 def read_tags_from_csv() -> set:
     tags = set()
     if os.path.exists(CSV_FILE):
