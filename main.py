@@ -1,12 +1,14 @@
 import pandas as pd
 import time
-
+import asyncio
 from Fetch_new_notices.create_csv import update_CSV
 from Fetch_new_notices.create_csv_and_append_row import *
 from Fetch_new_notices.is_target_tr import *
 
 from Fetch_new_notices.create_csv import main as fetch_notices_main
 from summary_generator_pipeline import main as process_notices
+
+from Notification.Telegram.Send_Messages import *
 
 def check_for_new_notices():
     try:
@@ -34,6 +36,7 @@ def main():
         if check_for_new_notices():
             # Run the summary generator pipeline if new notices are found
             process_notices()
+            asyncio.run(send_message_to_chat_ids())
         
         # Wait for 20 minutes before fetching new notices again
         time.sleep(1200)  # 1200 seconds = 20 minutes
