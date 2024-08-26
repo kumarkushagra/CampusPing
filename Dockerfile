@@ -1,28 +1,35 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+# Use a base image with Python
+FROM python:3.12-slim
 
-# Set environment variables to prevent Python from buffering stdout and stderr
-ENV PYTHONUNBUFFERED 1
+# Install necessary packages for Tesseract and Ghostscript
+RUN apt-get update && apt-get install -y \
+    tesseract-ocr \
+    wget \
+    apt-transport-https \
+    gnupg \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install necessary packages including Tesseract and Ghostscript
-RUN apt-get update && \
-    apt-get install -y tesseract-ocr ghostscript && \
-    apt-get clean
+# Install Ghostscript
+RUN wget https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs950/ghostscript-9.50-linux-x86_64.tgz && \
+    tar -xvf ghostscript-9.50-linux-x86_64.tgz && \
+    mv ghostscript-9.50-linux-x86_64/gs-950-linux-x86_64 /usr/local/bin/gs && \
+    rm -rf ghostscript-9.50-linux-x86_64*
 
-# Create a directory for the application
+# Set the working directory
 WORKDIR /app
 
-# Copy the application's requirements file to the Docker image
-COPY requirements.txt /app/
+# Copy all files to the container
+COPY . .
 
 # Install Python dependencies
 RUN pip install -r requirements.txt
 
-# Copy the rest of the application code to the Docker image
-COPY . /app
+# Expose port if needed (optional, specify if your app uses a specific port)
+# EXPOSE 8000
 
-# Expose the port that the app will run on
-EXPOSE 8000
-
-# Command to run the application
+# Run the main.py script
 CMD ["python", "main.py"]
