@@ -1,7 +1,7 @@
 # Use a base image with Python
 FROM python:3.12-slim
 
-# Install necessary packages for Tesseract and Ghostscript
+# Install necessary packages for Tesseract and Ghostscript, and build essentials
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     wget \
@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     libsm6 \
     libxext6 \
     libxrender-dev \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Ghostscript
