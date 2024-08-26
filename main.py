@@ -46,4 +46,5 @@ def main():
         time.sleep(1200)  # 1200 seconds = 20 minutes
 
 if __name__ == "__main__":
+    print("Deployment successful")
     main()
