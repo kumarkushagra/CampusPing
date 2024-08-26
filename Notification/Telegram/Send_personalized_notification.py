@@ -8,7 +8,7 @@ from telegram.error import TelegramError
 TOKEN = '7418556410:AAE4AIoE4aZAPQ0g5GcpFIVwMmf53DIx9ZU'
 bot = Bot(token=TOKEN)
 
-async def send_messages():
+async def send_personalized_messages():
     # Read the CSV files
     user_data_df = pd.read_csv('user_data.csv')
     output_df = pd.read_csv('output.csv')
@@ -56,5 +56,6 @@ Link: "https://www.imsnsit.org/imsnsit/notifications.php"
             except TelegramError as e:
                 print(f"Failed to send message to {name}: {e}")
 
-# Run the asynchronous function
-asyncio.run(send_messages())
+if __name__ == "__main__":
+    # Run the asynchronous function
+    asyncio.run(send_personalized_messages())
