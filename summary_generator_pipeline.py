@@ -20,7 +20,7 @@ from Download_pdf.download_new_pdf import *
 from Download_pdf.ocr_pdf import *
 
 
-def main():
+def process_notices():
     input_file = r"database\notice.csv"
     output_file = "output.csv"
 
@@ -84,4 +84,8 @@ def main():
 if __name__ == "__main__":
     # counter = 0
     # main(counter)
-    main()
+    try:
+        process_notices()   
+    # Your main code here
+    except Exception as e:
+        print(f"An error occurred: {e}")
