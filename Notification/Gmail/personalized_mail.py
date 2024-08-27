@@ -8,7 +8,11 @@ from email.mime.text import MIMEText
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
 EMAIL_ADDRESS = 'imsnotificationbot@gmail.com'
-EMAIL_PASSWORD = 'gdxm cmzv mjpr dzyi'  # Use an app password if 2FA is enabled
+EMAIL_PASSWORD = 'gdxm cmzv mjpr dzyi'
+
+# File paths
+USER_DATA_FILE = 'user_data.csv'
+NOTIFICATIONS_FILE = 'output.csv'
 
 def send_email(to_email, subject, body):
     """Send an email using Gmail's SMTP server."""
@@ -33,48 +37,59 @@ def send_email(to_email, subject, body):
 
 def send_emails():
     # Read the CSV files
-    user_data_df = pd.read_csv('user_data.csv')
-    output_df = pd.read_csv('output.csv')
+    user_data_df = pd.read_csv(USER_DATA_FILE)
+    output_df = pd.read_csv(NOTIFICATIONS_FILE)
 
-    # Get the extracted text of the last notice
-    last_notice_text = output_df.iloc[-1]['extracted_text']
-    print("Last notice text retrieved.")
+    # Convert 'email_sent' column to integer, defaulting to 0 if conversion fails
+    output_df['email_sent'] = pd.to_numeric(output_df['email_sent'], errors='coerce').fillna(0).astype(int)
 
-    # Iterate over each user in user_data.csv
-    for _, row in user_data_df.iterrows():
-        name = row['Name']
-        roll_number = row['Roll Number']
-        email = str(row.get('Email', '')).strip()  # Ensure email is a string and handle NaN
+    # Filter notifications that need to be sent
+    notifications_to_send = output_df[output_df['email_sent'] == 0]
 
-        if not email or email == 'nan':
-            print(f"Invalid or missing email for {name}. Skipping.")
-            continue
+    if notifications_to_send.empty:
+        print("No notifications to send.")
+        return
 
-        # Convert name and roll_number to strings and handle NaN values
-        name = str(name) if pd.notna(name) else ''
-        roll_number = str(roll_number) if pd.notna(roll_number) else ''
+    # Iterate over each notification to send
+    for _, notification_row in notifications_to_send.iterrows():
+        last_notice_text = notification_row['extracted_text']
+        print("Notice text retrieved.")
 
-        # Initialize flags for sending emails
-        name_found = False
-        roll_number_found = False
+        # Iterate over each user in user_data.csv
+        for _, user_row in user_data_df.iterrows():
+            name = user_row['Name']
+            roll_number = user_row['Roll Number']
+            email = str(user_row.get('Email', '')).strip()  # Ensure email is a string and handle NaN
 
-        # Check if the name is found in the extracted text
-        if name and re.search(re.escape(name), last_notice_text, re.IGNORECASE):
-            name_found = True
-            print(f"Name '{name}' found in the extracted text.")
+            if not email or email == 'nan':
+                print(f"Invalid or missing email for {name}. Skipping.")
+                continue
 
-        # Check if the roll number is found in the extracted text
-        if roll_number and re.search(re.escape(roll_number), last_notice_text, re.IGNORECASE):
-            roll_number_found = True
-            print(f"Roll number '{roll_number}' found in the extracted text.")
-        
-        # Send a combined email if both name and roll number were found
-        if name_found or roll_number_found:
-            subject = "Notice Update"
-            body = f"""Hello {name}, your {'name and roll number' if name_found and roll_number_found else 'name' if name_found else 'roll number'} was found in the latest notice. Please check it out!
+            # Convert name and roll_number to strings and handle NaN values
+            name = str(name) if pd.notna(name) else ''
+            roll_number = str(roll_number) if pd.notna(roll_number) else ''
+
+            # Initialize flags for sending emails
+            name_found = False
+            roll_number_found = False
+
+            # Check if the name is found in the extracted text
+            if name and re.search(re.escape(name), last_notice_text, re.IGNORECASE):
+                name_found = True
+                print(f"Name '{name}' found in the extracted text.")
+
+            # Check if the roll number is found in the extracted text
+            if roll_number and re.search(re.escape(roll_number), last_notice_text, re.IGNORECASE):
+                roll_number_found = True
+                print(f"Roll number '{roll_number}' found in the extracted text.")
+            
+            # Send a combined email if both name and roll number were found
+            if name_found or roll_number_found:
+                subject = "Notice Update"
+                body = f"""Hello {name}, your {'name and roll number' if name_found and roll_number_found else 'name' if name_found else 'roll number'} was found in the latest notice. Please check it out!
 Link: https://www.imsnsit.org/imsnsit/notifications.php
-            """
-            send_email(email, subject, body)
+                """
+                send_email(email, subject, body)
 
 if __name__ == "__main__":
     send_emails()

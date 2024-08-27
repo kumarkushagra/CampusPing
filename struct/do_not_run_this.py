@@ -1,14 +1,23 @@
-# DO NOT RUN THIS IF NOT NEEDED
+#DO NOT RUN THIS WITHOUT A REASON
 
 import pandas as pd
+import os
 
-# Load the existing CSV file into a DataFrame
-df = pd.read_csv('user_data.csv')
+# Define the path to the file in the root directory
+file_path = "D:\Projects\CampusPing\output.csv"  # Update this to the actual path if necessary
 
-# Add the new column "Phone Number" with empty values
-df['Phone Number'] = ''
+# Check if the file exists
+if os.path.isfile(file_path):
+    # Read the CSV file into a DataFrame
+    df = pd.read_csv(file_path)
 
-# Save the updated DataFrame back to the CSV file
-df.to_csv('user_data.csv', index=False)
+    # Set all elements in the 'telegram_notification_sent' and 'email_sent' columns to 1
+    df['telegram_notification_sent'] = 1
+    df['email_sent'] = 1
 
-print("Added 'Phone Number' column with all values empty.")
+    # Save the modified DataFrame back to the same CSV file
+    df.to_csv(file_path, index=False)
+
+    print(f"File successfully updated: {file_path}")
+else:
+    print(f"File {file_path} does not exist.")

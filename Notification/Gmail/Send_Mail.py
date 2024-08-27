@@ -3,8 +3,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import asyncio
-import csv
-import ast  # For safely evaluating string representations of Python literals
+import pandas as pd
+import ast  # For safely evaluating string representations of all Tags
 
 # Configuration
 SMTP_SERVER: typing.Final = 'smtp.gmail.com'
@@ -14,28 +14,49 @@ EMAIL_PASSWORD: typing.Final = 'gdxm cmzv mjpr dzyi'  # Use your generated app p
 USER_DATA_FILE: typing.Final = 'user_data.csv'
 NOTIFICATIONS_FILE: typing.Final = 'output.csv'
 
-async def send_email_to_users():
+async def send_emails_to_users():
     try:
-        # Read notifications from the CSV file
-        with open(NOTIFICATIONS_FILE, mode='r', encoding='utf-8') as file:
-            reader = list(csv.DictReader(file))
-            if not reader:
-                print("No notifications available.")
-                return
+        # Read notifications from the CSV file using pandas
+        notifications_df = pd.read_csv(NOTIFICATIONS_FILE)
+        if notifications_df.empty:
+            print("No notifications available.")
+            return
 
-            # Get the last notification
-            latest_notification = reader[-1]
-            if latest_notification.get('email_sent') == '1':
-                print("Notice already sent.")
-                return
+        # Convert 'email_sent' column to integer, defaulting to 0 if conversion fails
+        notifications_df['email_sent'] = pd.to_numeric(notifications_df['email_sent'], errors='coerce').fillna(0).astype(int)
 
+        # Filter notifications that have not been sent
+        unsent_notifications_df = notifications_df[notifications_df['email_sent'] == 0]
+        if unsent_notifications_df.empty:
+            print("All notifications have already been sent.")
+            return
+
+        # Read user data from the CSV file using pandas
+        user_data_df = pd.read_csv(USER_DATA_FILE)
+        user_data = {}
+        for _, row in user_data_df.iterrows():
+            email = row.get('Email')
+            if pd.isna(email) or email.strip() == '':
+                continue
+            email = email.strip()
+            user_tags = row.get('Tags', '')
+            user_tags = [tag.strip().lower() for tag in user_tags.split(',') if tag.strip()] if pd.notna(user_tags) else []
+            user_data[email] = user_tags
+
+        # Initialize the SMTP server
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+
+        # Process each unsent notification
+        for _, notification in unsent_notifications_df.iterrows():
             # Extract notification details
-            summary = latest_notification.get('LLM_summary', '').strip()
+            summary = notification['LLM_summary'].strip()
             link = "https://www.imsnsit.org/imsnsit/notifications.php"
-            tags = latest_notification.get('tags')
+            tags = notification.get('tags', '')
 
             # Process tags
-            if tags is None:
+            if pd.isna(tags):
                 tags = ''
             
             try:
@@ -50,51 +71,26 @@ async def send_email_to_users():
             notification_text = f"{summary}\n\n{link}\nTags: {', '.join(tags)}"
             print(f"Tags of the notification: {tags}")
 
-        # Read user data from the CSV file
-        user_data = {}
-        with open(USER_DATA_FILE, mode='r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                email = row.get('Email')
-                if email is None or email.strip() == '':
-                    continue
-                email = email.strip()
-                user_tags = row.get('Tags', '')
-                user_tags = [tag.strip().lower() for tag in user_tags.split(',') if tag.strip()] if user_tags else []
-                user_data[email] = user_tags
+            # Send notification to users based on tags
+            for email, user_tags in user_data.items():
+                if not tags or set(tags) & set(user_tags):
+                    try:
+                        msg = MIMEMultipart()
+                        msg['From'] = EMAIL_ADDRESS
+                        msg['To'] = email
+                        msg['Subject'] = 'Notice Update'
+                        msg.attach(MIMEText(notification_text, 'plain'))
 
-        # Initialize the SMTP server
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
-        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+                        server.send_message(msg)
+                        print(f"Email sent to {email}")
+                    except Exception as e:
+                        print(f"Failed to send email to {email}. Error: {e}")
 
-        # Send notification to users based on tags
-        for email, user_tags in user_data.items():
-            if not tags or set(tags) & set(user_tags):
-                try:
-                    msg = MIMEMultipart()
-                    msg['From'] = EMAIL_ADDRESS
-                    msg['To'] = email
-                    msg['Subject'] = 'Notice Update'
-                    msg.attach(MIMEText(notification_text, 'plain'))
+            # Update the CSV file to mark the notification as sent
+            notifications_df.loc[notifications_df['S. no.'] == notification['S. no.'], 'email_sent'] = 1
 
-                    server.send_message(msg)
-                    print(f"Email sent to {email}")
-                except Exception as e:
-                    print(f"Failed to send email to {email}. Error: {e}")
-
-        # Update the CSV file to mark the notification as sent
-        with open(NOTIFICATIONS_FILE, mode='r+', encoding='utf-8', newline='') as file:
-            reader = list(csv.DictReader(file))
-            fieldnames = reader[0].keys()
-            file.seek(0)
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-            writer.writeheader()
-            for row in reader:
-                if row.get('S. no.') == latest_notification.get('S. no.'):
-                    row['email_sent'] = '1'
-                writer.writerow(row)
-            file.truncate()  # Truncate the file to remove any leftover data from previous writes
+        # Save the updated notifications dataframe to CSV
+        notifications_df.to_csv(NOTIFICATIONS_FILE, index=False)
 
         # Close the SMTP server
         server.quit()
@@ -106,4 +102,4 @@ async def send_email_to_users():
 
 if __name__ == '__main__':
     # Run the async function using asyncio
-    asyncio.run(send_email_to_users())
+    asyncio.run(send_emails_to_users())
