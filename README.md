@@ -1,23 +1,25 @@
+
 # CampusPing
 
-CampusPing is an automated notification and information retrieval system tailored for students of NSUT (Netaji Subhas University of Technology), New Delhi. It monitors the college's official site for new notices, processes them, and sends relevant notifications to users based on their preferences.
+CampusPing is an advanced, automated notification and information retrieval system designed for the students of NSUT (Netaji Subhas University of Technology), New Delhi. The platform continuously monitors the university's official site for new notices, processes them, and delivers personalized notifications to users based on their specific preferences.
+
+This project is deployed on **Azure**, leveraging its robust infrastructure to ensure high availability and reliability.
 
 ## Table of Contents
 
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+- [Note](#note)
 
 ## Features
 
-- **Automated Monitoring:** Checks for new notices every 10 minutes.
-- **OCR and Text Extraction:** Applies OCR to extract text from image-based PDFs using Tesseract.
-- **Notice Summarization:** Summarizes notices using the `facebook/bart-large-cnn` model via Hugging Face API.
-- **User-Specific Notifications:** Sends notices based on user-selected tags (e.g., B.Tech, Backlogs).
-- **PDF Downloads:** Supports downloading of notice PDFs.
-- **Web Interface:** Provides a user-friendly web interface for interaction.
+- **Automated Monitoring:** Continuously checks for new notices every 10 minutes.
+- **OCR and Text Extraction:** Utilizes Tesseract for OCR to extract text from image-based PDFs.
+- **Notice Summarization:** Uses the `facebook/bart-large-cnn` model via Hugging Face API to summarize notices effectively.
+- **User-Specific Notifications:** Delivers notices based on user-selected categories (e.g., B.Tech, Backlogs).
+- **PDF Downloads:** Allows easy downloading of notice PDFs.
+- **Web Interface:** Offers an intuitive web interface for seamless user interaction.
 
 ## Installation
 
@@ -39,8 +41,8 @@ CampusPing is an automated notification and information retrieval system tailore
    ```
 
 4. **Install Additional Applications:**
-   - [Ghostscript](https://ghostscript.com/releases/gsdnld.html) (for processing PDFs)
-   - [Tesseract](https://github.com/UB-Mannheim/tesseract/wiki) (for OCR)
+   - [Ghostscript](https://ghostscript.com/releases/gsdnld.html) (for PDF processing)
+   - [Tesseract](https://github.com/UB-Mannheim/tesseract/wiki) (for Optical Character Recognition)
 
 5. **Run the Application:**
    ```bash
@@ -49,16 +51,25 @@ CampusPing is an automated notification and information retrieval system tailore
 
 ## Usage
 
-- **Fetching Notices:** Automatically handled by the system every 10 minutes.
-- **Summarization:** Summaries are generated using the `facebook/bart-large-cnn` model through the Hugging Face API.
-- **Notifications:** Sent to users based on their chosen preferences and tags.
+- **Fetching Notices:** Automatically managed by the system every 10 minutes.
+- **Summarization:** Notices are summarized using the `facebook/bart-large-cnn` model through the Hugging Face API.
+- **Notifications:** Notifications are sent to users based on their selected tags and preferences.
 
-## Contributing
+## Note
 
-Contributions are welcome. Please follow the [contributing guidelines](CONTRIBUTING.md).
+This project integrates services from HuggingFace (for notice summarization using an LLM), Telegram (for sending notifications), and Gmail (for sending emails). The necessary API keys are securely stored in a `.env` file located in the root directory.
 
-## License
+The format of the `.env` file is as follows:
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+```plaintext
+SECRET_KEY='your_secret_key'
+TELEGRAM_API_TOKEN='your_telegram_api_token'
+GMAIL_APP_PASSWORD='your_gmail_app_password'
+HUGGING_FACE_KEY='your_hugging_face_key'
+```
+
+**Security Notice:** We have invalidated any API keys that were visible in previous commits. Please ensure your `.env` file is updated with new and secure API keys.
+
+**Important:** Make sure to replace the placeholder values with your actual credentials and API keys.
 
 ---
