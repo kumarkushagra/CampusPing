@@ -6,11 +6,16 @@ import asyncio
 import pandas as pd
 import ast  # For safely evaluating string representations of all Tags
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 # Configuration
 SMTP_SERVER: typing.Final = 'smtp.gmail.com'
 SMTP_PORT: typing.Final = 587
 EMAIL_ADDRESS: typing.Final = 'imsnotificationbot@gmail.com'
-EMAIL_PASSWORD: typing.Final = 'gdxm cmzv mjpr dzyi'  # Use your generated app password here
+EMAIL_PASSWORD: typing.Final = os.getenv('GMAIL_APP_PASSWORD')
 USER_DATA_FILE: typing.Final = 'user_data.csv'
 NOTIFICATIONS_FILE: typing.Final = 'output.csv'
 

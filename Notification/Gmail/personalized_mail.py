@@ -4,11 +4,16 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 # Gmail configuration
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 587
 EMAIL_ADDRESS = 'imsnotificationbot@gmail.com'
-EMAIL_PASSWORD = 'gdxm cmzv mjpr dzyi'
+EMAIL_PASSWORD = os.getenv('GMAIL_APP_PASSWORD')
 
 # File paths
 USER_DATA_FILE = 'user_data.csv'

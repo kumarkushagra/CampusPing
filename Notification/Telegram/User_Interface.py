@@ -3,7 +3,12 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from Utility_functions import *
 
-TOKEN: typing.Final = '7418556410:AAE4AIoE4aZAPQ0g5GcpFIVwMmf53DIx9ZU'
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+TOKEN: typing.Final = os.getenv('TELEGRAM_API_TOKEN')
 BOT_USERNAME: typing.Final = '@NSUT_IMS_notification_bot'
 CSV_FILE: typing.Final = 'output.csv'
 USER_DATA_FILE: typing.Final = 'user_data.csv'

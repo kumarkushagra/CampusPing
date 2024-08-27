@@ -4,6 +4,12 @@ import sys
 from transformers import pipeline
 from huggingface_hub import login
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+TOKEN = os.getenv('HUGGING_FACE_KEY')
+
 # Suppress warnings
 warnings.filterwarnings("ignore")
 
@@ -23,7 +29,7 @@ class HiddenPrints:
 
 with HiddenPrints():
     # Login using your token
-    login("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")
+    login(TOKEN)
 
 # Load the summarization model
 summarizer = pipeline("summarization", model="facebook/bart-large-cnn")

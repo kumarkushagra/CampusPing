@@ -3,9 +3,14 @@ import re
 import asyncio
 from telegram import Bot
 from telegram.error import TelegramError
+import typing
 
-# Your bot token
-TOKEN = '7418556410:AAE4AIoE4aZAPQ0g5GcpFIVwMmf53DIx9ZU'
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+TOKEN: typing.Final = os.getenv('TELEGRAM_API_TOKEN')
 bot = Bot(token=TOKEN)
 
 # File variables
