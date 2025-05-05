@@ -1,9 +1,12 @@
 
+> **Note:** High CPU usage and long processing times for a single file. Optimization is needed before deployment.
+
+> Currently disabled.
+
 # CampusPing
 
 CampusPing is an advanced, automated notification and information retrieval system designed for the students of NSUT (Netaji Subhas University of Technology), New Delhi. The platform continuously monitors the university's official site for new notices, processes them, and delivers personalized notifications to users based on their specific preferences.
 
-This project is deployed on **Azure**, leveraging its robust infrastructure to ensure high availability and reliability.
 
 ## Table of Contents
 
