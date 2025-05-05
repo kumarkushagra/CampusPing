@@ -6,7 +6,7 @@ from huggingface_hub import login
 
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 TOKEN = os.getenv('HUGGING_FACE_KEY')
 
